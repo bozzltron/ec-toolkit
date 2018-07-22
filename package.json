@@ -1,0 +1,16 @@
+{
+  "name": "evolution",
+  "version": "1.0.0",
+  "description": "Evolve algorithms",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/jasmine-node --matchall tests"
+  },
+  "author": "Michael Bosworth",
+  "license": "ISC",
+
+  "dependencies": {
+    "jasmine-node": "^1.15.0",
+    "lodash": "^4.17.10"
+  }
+}

@@ -1,0 +1,1 @@
+module.exports = Array.from('abcdefghijklmnopqrstuvwxyz0123456789\'"{}[]().;?: ');
