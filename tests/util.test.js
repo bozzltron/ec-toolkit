@@ -36,10 +36,20 @@ describe("Util", function(){
     expect(kids[1]).not.toEqual(dad)
   })
 
-  it("should rank code", function(){
+  it("should rank invalid code as 0", function(){
     expect(Util.rank([], '*ger')).toEqual(0)
-    expect(Util.rank([], 'return 42')).toEqual(1)
-    expect(Util.rank([], 'return 2', 2)).toEqual(2)
+  })
+
+  it("should rank valid code that returns nothing as 1", function(){
+    expect(Util.rank([], 'var x = 3')).toEqual(1)
+  })
+
+  it("should rank valid code that returns something as 2", function(){
+    expect(Util.rank([], 'var x = 3; return x')).toEqual(2)
+  })
+
+  it("should rank valid code that returns a value that matches the target as 3", function(){
+    expect(Util.rank([3], 'return arguments[0]', 3)).toEqual(3)
   })
 
   it("should create pairs", function(){

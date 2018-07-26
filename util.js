@@ -27,7 +27,7 @@ const Util = {
   },
   
   compile:function(code){
-    return Function('"use strict";' + code)
+    return Function(`"use strict"; ${code}`)
   },
 
   isValid: function(code){
@@ -77,15 +77,20 @@ const Util = {
   
 	rank: function(params, code, target) {
 		try {
-			let compiled = Util.compile(code);
-      console.log("type", typeof(compiled))
-      console.log("result", compiled.appy(null, params))
-      if(typeof(compiled) == 'function') {
-				if(compiled.appy(null, params) === target){
-					return 2
-        }			
-        return 1
-			}
+      let fn = Util.compile(code)
+      let result = fn.apply(null, params)
+      console.log("type", typeof(result))
+      switch(typeof(result)) {
+        case 'undefined':
+          return 1
+        break;
+        default:
+          if(result == target) {
+            return 3
+          }
+          return 2
+        break;
+      }
 		} catch(e) {
       return 0
       console.log(e);
