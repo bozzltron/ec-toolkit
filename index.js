@@ -2,5 +2,9 @@
 
 var evolve = require('./evolve');
 
-evolve.where('anything').limit(100000).produces(42)
+evolve
+  .where('anything')
+  .produces(42)
+  .populate(10)
+  .limit(1000)
 

@@ -13,17 +13,5 @@ describe("Evolve", function(){
     expect(evolve.generations).toEqual(1)
   })
 
-  it("should select valid code over invalid", function(){
-    let genes = [
-      new Gene(['<', '>']),
-      new Gene(['return','42'])
-    ];
-    genes.forEach((gene)=>{
-      console.log("gene solution", gene.solution)
-      console.log("gene rank", gene.rank)
-    })
-    let selection = evolve.select(genes)
-    expect(selection.code).toEqual('return 42')
-  })
 
 })

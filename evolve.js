@@ -20,26 +20,27 @@ class Evolve {
 			return b.rank - a.rank
 		})
 				
-		return arr[0];
+		return arr.slice(0, Math.round(arr.length/2))
 	}
 
 	run() {
-		// establish problem : calculate 42
 		var evolving = true;
 		var trait = "";
 		var count = 0;
-		
+
+		// initialize
+		var agents = [];
+		for(var i=0; i<this.population; i++) {
+			agents.push(new Gene())
+		}
+
 		while(evolving && count < this.generations) {
 
-			// assign agents
-			var agents = [];
-			for(var i=0; i<3; i++) {
-				let gene = new Gene(trait.split(" "), this.target, count)
-				gene.mutate(1)
-				agents.push(gene)
-			}
+			var best = this.select(agents)
 
-			var agent = this.select(agents)
+			for(let i=0; i<best.length-1; i+=2){
+				
+			}
 
 			console.log(JSON.stringify(agents.map((agent)=>{ return { 
 				code: agent.code,
@@ -48,13 +49,11 @@ class Evolve {
 
 			console.log("Selected ", agent.code)
 
-			if(agent.solution == this.target) {
+			if(agent.rank == 1) {
 				evolving = false;
 			}
 
-			if(agent.solution) {
-				trait = agent.code;
-			}
+			trait = agent.code
 
 			count++;
 			console.log("count " + count);
@@ -72,9 +71,13 @@ class Evolve {
 	}
 
 	produces(target) {
-		console.log("produces");
 		this.target = target
 	  this.run()
+		return this
+	}
+
+	populate(population){
+		this.population = this.population
 		return this
 	}
 
