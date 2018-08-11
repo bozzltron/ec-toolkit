@@ -1,6 +1,10 @@
-s = '';
-for( var i = 32; i <= 126; i++ ) {
-    s += String.fromCharCode( i );
-}
+var BinaryTree = require('./data-structures/binary-tree')
+ 
+var binaryTree = new BinaryTree({
+  value: '+',
+  parent: null,
+  left: { value: 'x' },
+  right: { value: 'y'}
+})
 
-console.log(s)
+console.log(binaryTree.inOrder());

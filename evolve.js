@@ -1,63 +1,79 @@
 'use strict;'
 
-var Gene = require('./gene'),
-	_ = require('lodash')
+var _ = require('lodash'),
+	Mutate = require('./mutate')
 
 class Evolve {
 
 	constructor() {
-		this.generations = 1
+		this.generations = undefined
 		this.target = true
 		this.parameters = []
-		_.bindAll(this, 'where', 'run')
-	}
-
-	select(arr) {
-		var fnIndex = -1;
-		var curr = arr[0];
-		var index = 0;
-		arr = arr.sort((a, b)=>{
-			return b.rank - a.rank
-		})
-				
-		return arr.slice(0, Math.round(arr.length/2))
+		this.population = 10
+		this.sleepFor = 0
+		_.bindAll(this, 'where', 'run', 'populate', 'limit', 'produces', 'select')
 	}
 
 	run() {
-		var evolving = true;
+		this.evolving = true;
 		var trait = "";
 		var count = 0;
 
 		// initialize
 		var agents = [];
+		console.log(`Initialize ${this.population} agents...`)
 		for(var i=0; i<this.population; i++) {
-			agents.push(new Gene())
+			agents.push({code: this.initialize()})
 		}
 
-		while(evolving && count < this.generations) {
+		console.log("init agents", agents)
 
-			var best = this.select(agents)
-
-			for(let i=0; i<best.length-1; i+=2){
-				
+		console.log("generations", this.generations)
+		
+			if(this.sleepFor) {
+				setInterval(function(){
+					if(this.evolving && count < this.generations) {
+						agents = this.select(agents)
+						count++
+						console.log("count " + count);
+					}
+				}.bind(this), this.sleepFor)
+			} else {
+				while(this.evolving) {
+				agents = this.select(agents)
+				count++;
+				console.log("count " + count);
 			}
-
-			console.log(JSON.stringify(agents.map((agent)=>{ return { 
-				code: agent.code,
-				solution: agent.solution
-			} }), 2, 2))
-
-			console.log("Selected ", agent.code)
-
-			if(agent.rank == 1) {
-				evolving = false;
-			}
-
-			trait = agent.code
-
-			count++;
-			console.log("count " + count);
+			
 		}
+		return this
+	}
+
+	select(agents) {
+
+			// rank genes
+			agents.forEach((agent)=>{
+				agent.rank = this.rank(agent)
+			})
+			
+			agents = Mutate.sortByRank(agents)
+			
+			// evaulate goal
+			if(agents[0].rank == Infinity){
+				// we done it
+				console.log("---------------- Result", agents[0].code)
+				this.evolving = false
+			}
+			
+			agents.forEach((agent)=>{
+				console.log("code", agent.code, "rank", agent.rank, "valid", agent.isValid, "result", agent.result)
+			})
+
+			// Variation (crossover and mutation)
+			//agents = Util.crossoverGeneration(agents).map((code)=>{ return {code}})
+			agents = Mutate.cloneWithVariants(agents[0].code, 19, 2).map((code)=>{ return {code:code} })
+
+			return agents
 	}
 
 	limit(generations) {
@@ -72,12 +88,31 @@ class Evolve {
 
 	produces(target) {
 		this.target = target
-	  this.run()
 		return this
 	}
 
 	populate(population){
-		this.population = this.population
+		this.population = population
+		return this
+	}
+
+	sleep(sec) {
+		this.sleepFor = sec * 1000;
+		return this;
+	}
+
+	rank(fn) {
+		this.rank = fn
+		return this
+	}
+
+	initialize(fn){
+		this.initialize = fn
+		return this
+	}
+
+	from(data){
+		this.data = data
 		return this
 	}
 

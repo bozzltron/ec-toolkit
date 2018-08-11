@@ -13,5 +13,21 @@ describe("Evolve", function(){
     expect(evolve.generations).toEqual(1)
   })
 
+  it("should set target", function(){
+    evolve.limit(1).produces(50)
+    expect(evolve.target).toEqual(50)
+  })
+
+  it("should establish an initial populate", function(){
+    evolve.populate(20)
+    expect(evolve.population).toEqual(20)
+  })  
+
+  it("should allow chaining", function(){
+    evolve
+    .populate(100)
+    .limit(1)
+  
+  })
 
 })

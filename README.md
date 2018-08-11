@@ -1,8 +1,5 @@
-## TODO
-Increase complexity over time
-Only adapt what has already been written
-Mutate
-Recombination?
+## Evolutionary Computing Tookit
+The purpose of this module is to provide the tools needed to explore Evolutionary Computing with JavaScript.
 
 ##Order of operations
 Initialize Gene
