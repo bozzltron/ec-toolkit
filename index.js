@@ -1,11 +1,11 @@
 'use strict;'
 
-var evolve = require('./evolve'),
+var model = require('./model'),
   Code = require('./code'),
   reserved = require('./data/reserved'),
   characters = require('./data/ascii')
 
-evolve
+model
   .from(characters)
   .populate(20)
   .initialize(function(){ return Code.generate(20) })

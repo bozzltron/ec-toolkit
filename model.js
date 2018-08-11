@@ -3,7 +3,7 @@
 var _ = require('lodash'),
 	Mutate = require('./mutate')
 
-class Evolve {
+class Model {
 
 	constructor() {
 		this.generations = undefined
@@ -118,4 +118,4 @@ class Evolve {
 
 }
 
-module.exports = new Evolve();
+module.exports = new Model();

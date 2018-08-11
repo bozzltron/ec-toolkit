@@ -1,15 +1,12 @@
+'use strict;'
+const uuidv4 = require('uuid/v4');
+
 class BinaryTreeNode {
 
   constructor(value){
     this.value = value
-  }
-
-  hasLeft(){
-    return this.left != undefined
-  }
-
-  hasRight(){
-    return this.right != undefined
+    this.left = null
+    this.right = null
   }
 
   getRight(){
