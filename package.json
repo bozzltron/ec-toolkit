@@ -12,6 +12,7 @@
     "binarytree": "^0.3.4",
     "jasmine-node": "^1.15.0",
     "lodash": "^4.17.10",
+    "object-assign-deep": "^0.4.0",
     "tree-model": "^1.0.7",
     "uuid": "^3.3.2"
   }

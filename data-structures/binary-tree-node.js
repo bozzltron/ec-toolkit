@@ -4,9 +4,8 @@ const uuidv4 = require('uuid/v4');
 class BinaryTreeNode {
 
   constructor(value){
+    this.id = uuidv4()
     this.value = value
-    this.left = null
-    this.right = null
   }
 
   getRight(){
@@ -19,12 +18,10 @@ class BinaryTreeNode {
 
   addLeft(value){
     this.left = new BinaryTreeNode(value)
-    this.left.parent = this
   }
 
   addRight(value){
     this.right = new BinaryTreeNode(value)
-    this.right.parent = this
   }
 
   setValue(value){

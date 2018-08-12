@@ -1,10 +1,25 @@
-var BinaryTree = require('./data-structures/binary-tree')
- 
-var binaryTree = new BinaryTree({
+let mother = {
   value: '+',
-  parent: null,
-  left: { value: 'x' },
-  right: { value: 'y'}
-})
+  left: {
+    value: 'x'
+  },
+  right: {
+    value: '3'
+  }
+}
 
-console.log(binaryTree.inOrder());
+let father = {
+  value: '-',
+  left: {
+    value: 'z'
+  },
+  right: {
+    value: '4'
+  }
+}
+
+let child = Object.assign({}, father)
+child.right = mother.right
+
+
+console.log('object' , child);
