@@ -6,18 +6,31 @@ describe("BinaryTree", function(){
   let tree;
 
   beforeEach(function(){
-    let root = new BinaryTreeNode(';')
-    root.addLeft('+')
-    root.getLeft().addLeft('x')
-    root.getLeft().addRight('3')
-    root.addRight('-')
-    root.getRight().addLeft('y')
-    root.getRight().addRight('4')
-    tree = new BinaryTree(root)
+    tree = new BinaryTree({
+      value: ';',
+      left: {
+        value: '+',
+        left: {
+          value: 'x'
+        },
+        right: {
+          value: '3'
+        }
+      },
+      right: {
+        value: '-',
+        left: {
+          value: 'y'
+        },
+        right: {
+          value: '4'
+        }
+      }
+    })
   })
 
   it("should initialize", function(){
-    let root = new BinaryTreeNode('+')
+    let root = {value: '+'}
     tree = new BinaryTree(root)
     expect(tree.root).toEqual(root);
   })
@@ -37,25 +50,19 @@ describe("BinaryTree", function(){
     expect(tree.inOrderValues().length).toEqual(10)
   })
 
-  it("should find a node in the tree", function(){
-    let nodes = tree.inOrder()
-    let id = nodes[3].id
-    let node = tree.find(id, tree.root)
-    expect(node).toEqual(nodes[3])
-  })
-
   it("should crossover two trees resulting in a tree unique from its parents", function(){
     let values = ['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+']
     let father = new BinaryTree()
     father.generate(values, 6, true)
     let mother = new BinaryTree()
     mother.generate(values, 6, true)
-    console.log('father', father.inOrderValues())
-    console.log('mother', mother.inOrderValues())
+    console.log('father', father)
+    console.log('mother', mother)
     let child = father.crossoverWith(mother)
     expect(child.inOrderValues()).not.toEqual(father.inOrderValues())
-    //expect(child).not.toEqual(mother)
-    console.log('crossover child', child.inOrderValues())
+    expect(child.inOrderValues()).not.toEqual(mother.inOrderValues())
+    console.log('crossover child', child)
+    console.log('father', father)
   })
 
 })

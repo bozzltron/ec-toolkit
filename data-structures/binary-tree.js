@@ -1,11 +1,21 @@
 const BinaryTreeNode = require('./binary-tree-node'),
   _ = require('lodash'),
-  objectAssignDeep = require('object-assign-deep')
+  objectAssignDeep = require('object-assign-deep'),
+  uuidv4 = require('uuid/v4');
 
 class BinaryTree {
 
   constructor(root){
     this.root = root
+    if(this.root){
+      this.root.isRoot = true
+      if(!this.root.id) {
+        this.inOrder((node)=>{ 
+          node.id = uuidv4()
+          return node
+        })
+      }
+    }
   }
 
   generate(values, range, exact='false') {
@@ -13,7 +23,10 @@ class BinaryTree {
     let ary = []
     for(let i=0; i<size; i++){
       let value = _.sampleSize(values, 1)[0]
-      ary.push(new BinaryTreeNode(value))
+      ary.push({
+        value: value,
+        id: uuidv4()
+      })
     }
     this.root = this.addBranches(ary)
   }
@@ -34,64 +47,52 @@ class BinaryTree {
   }
 
   prune(){
-    let ary = this.inOrder()
+    let ary = this.inOrder().filter((node)=>{ return !node.isRoot})
     let sample =  _.sampleSize(ary, 1)[0]
     return Object.assign({}, sample)
   }
 
-  inOrder(){
+  inOrder(fn){
     let ary = []
-    this.walkInOrder(this.root, ary)
+    this.walkInOrder(this.root, ary, fn)
     return ary
   }
 
-  inOrderValues(){
-    return this.inOrder().map((node)=>{ return node.value })
+  inOrderValues(fn){
+    return this.inOrder(fn).map((node)=>{ return node.value })
   }
 
-  walkInOrder(node, ary) {
+  walkInOrder(node, ary, fn) {
     if(!node) return
     if(node.left){
-      this.walkInOrder(node.left, ary)
+      this.walkInOrder(node.left, ary, fn)
     } 
-    ary.push(node)
+    ary.push(fn ? fn(node) : node)
     if(node.right) {
-      this.walkInOrder(node.right, ary)
+      this.walkInOrder(node.right, ary, fn)
     } 
   }
 
   crossoverWith(tree) {
-    let child = new BinaryTree(this.root)
+    let child = new BinaryTree(Object.assign({}, this.root))
     let removalPrune = child.prune()
-    console.log('removalPrune', new BinaryTree(removalPrune).inOrderValues())
+    console.log('removalPrune', removalPrune)
     let replacementPrune = tree.prune()
-    console.log('replacementPrune', new BinaryTree(replacementPrune).inOrderValues())
-    let nodeToBeReplaced = child.find(removalPrune.id, child.root)
-    console.log('tobereplaced', nodeToBeReplaced)
-    nodeToBeReplaced = replacementPrune
-    console.log('tobereplaced2', nodeToBeReplaced)
+    console.log('replacementPrune', replacementPrune)
+    let result = this.findParent(removalPrune.id, this.root)
+    result.node[result.direction] = replacementPrune
     return child
   }
 
-  find(id, object){
-    // let found
-    // let ary = this.inOrder()
-    // let i = 0
-    // let node = ary[i]
-    // while(node.id != id){
-    //   i++
-    //   node = ary[i]
-    // }
-    // return node
-    
-    if(object.id == id) return object
-    if(object.left) this.find(id, object.left)
-    if(object.right) this.find(id, object.right)
-    
-  }
-
-  findAndReplace(id, find, replace) {
-
+  findParent(id, node){
+    if(node.left && node.left.id == id){
+      return {node:node, direction:'left'}
+    }
+    if(node.right && node.right.id == id){
+      return {node:node, direction:'right'}
+    }
+    if(node.left) this.findParent(id, node.left)
+    if(node.right) this.findParent(id, node.right)
   }
 
 }
