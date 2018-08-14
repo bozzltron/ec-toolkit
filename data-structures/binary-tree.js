@@ -29,6 +29,7 @@ class BinaryTree {
       })
     }
     this.root = this.addBranches(ary)
+    this.root.isRoot = true
   }
 
   addBranches(ary){
@@ -74,25 +75,33 @@ class BinaryTree {
   }
 
   crossoverWith(tree) {
-    let child = new BinaryTree(Object.assign({}, this.root))
+    let child = new BinaryTree()
+    child.root = objectAssignDeep({}, this.root)
     let removalPrune = child.prune()
-    console.log('removalPrune', removalPrune)
     let replacementPrune = tree.prune()
-    console.log('replacementPrune', replacementPrune)
-    let result = this.findParent(removalPrune.id, this.root)
+    let result = {}
+    this.findParent(removalPrune.id, child.root, result)
     result.node[result.direction] = replacementPrune
     return child
   }
 
-  findParent(id, node){
+  findParent(id, node, result){
     if(node.left && node.left.id == id){
-      return {node:node, direction:'left'}
+      result.node = node
+      result.direction = 'left'
+      return result 
     }
     if(node.right && node.right.id == id){
-      return {node:node, direction:'right'}
+      result.node = node
+      result.direction = 'right'
+      return result 
     }
-    if(node.left) this.findParent(id, node.left)
-    if(node.right) this.findParent(id, node.right)
+    if(node.left) this.findParent(id, node.left, result)
+    if(node.right) this.findParent(id, node.right, result)
+  }
+
+  toJSON(){
+    return JSON.stringify(this.root, 2, 2)
   }
 
 }

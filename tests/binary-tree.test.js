@@ -50,19 +50,50 @@ describe("BinaryTree", function(){
     expect(tree.inOrderValues().length).toEqual(10)
   })
 
+  it("should find a parent node", function(){
+    tree = new BinaryTree({
+      "value": ";",
+      "id": "f4e7200e-f157-448b-b5b2-512aaef6873f",
+      "left": {
+        "value": "y",
+        "id": "dc1abed5-97ad-48d6-8210-4fd18830a023",
+        "left": {
+          "value": "+",
+          "id": "bdbd7ab0-752b-4b1b-985e-42dddab27cbe",
+          "left": {
+            "value": "/",
+            "id": "9c54cb02-08b7-4efd-86a8-0d0c0e7f5de8"
+          }
+        }
+      },
+      "right": {
+        "value": "+",
+        "id": "77f48854-653a-42cd-8e65-47c061af9d72",
+        "left": {
+          "value": "+",
+          "id": "e8dfb146-893f-4524-8c7d-00720cfe1988"
+        }
+      }
+    })
+
+    let result = {}
+    tree.findParent('e8dfb146-893f-4524-8c7d-00720cfe1988', tree.root, result)
+    expect(result).toEqual({ node:
+      { value: '+',
+        id: '77f48854-653a-42cd-8e65-47c061af9d72',
+        left: { value: '+', id: 'e8dfb146-893f-4524-8c7d-00720cfe1988' } },
+     direction: 'left' })
+  })
+
   it("should crossover two trees resulting in a tree unique from its parents", function(){
     let values = ['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+']
     let father = new BinaryTree()
     father.generate(values, 6, true)
     let mother = new BinaryTree()
     mother.generate(values, 6, true)
-    console.log('father', father)
-    console.log('mother', mother)
     let child = father.crossoverWith(mother)
     expect(child.inOrderValues()).not.toEqual(father.inOrderValues())
     expect(child.inOrderValues()).not.toEqual(mother.inOrderValues())
-    console.log('crossover child', child)
-    console.log('father', father)
   })
 
 })
