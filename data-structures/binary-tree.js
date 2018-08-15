@@ -21,14 +21,18 @@ class BinaryTree {
     let size = exact ? range : Math.floor((Math.random() * range) + 1)
     let ary = []
     for(let i=0; i<size; i++){
-      let value = _.sampleSize(values, 1)[0]
-      ary.push({
-        value: value,
-        id: uuidv4()
-      })
+      ary.push(this.createNode(values))
     }
     this.root = this.addBranches(ary)
     this.root.isRoot = true
+  }
+  
+  createNode(values){
+    let value = _.sampleSize(values, 1)[0]
+    return {
+      value: value,
+      id: uuidv4()
+    }
   }
 
   addBranches(ary){
@@ -103,18 +107,29 @@ class BinaryTree {
     return JSON.stringify(this.root, 2, 2)
   }
 
-  mutate(nodesToMutate, options, newNode){
+  appendNode(values, ary){
+    ary = ary || this.inOrder()
+    ary.filter((node)=>{ return !node.left || !node.right })
+    if(!ary[0].left) {
+      ary[0].left = this.createNode(values)
+    } else if(!ary[0].right) {
+      ary[0].left = this.createNode(values)
+    }
+  }
+
+  mutate(nodesToMutate, options, values){
     let ary = this.inOrder()
     for(let i=0; i<nodesToMutate; i++){
       let type = Math.floor(Math.random() * Math.floor(2))
       let index
       switch(type){
-        case 1:
-          // swap 
+        case 0: // add
+          this.appendNode(values, ary)
+        case 1: // swap 
           let mutation = _.sampleSize(options, 1)[0]
           index = this.getRandomInt(ary.length)
           ary[index].value = mutation
-        case 2:
+        case 2: // delete
           index = this.getRandomInt(ary.length)
           delete ary[index]
       }

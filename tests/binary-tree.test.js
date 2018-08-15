@@ -103,4 +103,11 @@ describe("BinaryTree", function(){
     expect(tree.inOrderValues()).not.toEqual(copy.inOrderValues())
   })
 
+  it("should append node", function(){
+    let copy = new BinaryTree()
+    copy.root = objectAssignDeep({}, tree.root)
+    tree.appendNode(['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+'])
+    expect(tree.inOrderValues()).not.toEqual(copy.inOrderValues())
+  })
+
 })

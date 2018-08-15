@@ -1,35 +1,4 @@
-const BinaryTree = require('./data-structures/binary-tree')
-
-let mother = {
-  value: '+',
-  left: {
-    value: 'x'
-  },
-  right: {
-    value: '3'
-  }
+for(let i=0; i<100; i++){
+  let proximity = Math.round( (1 /  Math.abs(42 - i ) * 1000)) 
+  console.log(`${i} proximity to 42 is ${proximity}`)
 }
-
-let father = {
-  value: '-',
-  left: {
-    value: 'z'
-  },
-  right: {
-    value: '4'
-  }
-}
-
-let child = Object.assign({}, father)
-child.right = mother.right
-
-
-console.log('object' , child);
-
-let motherTree = new BinaryTree(mother)
-let fatherTree = new BinaryTree(father)
-let childTree = new BinaryTree(Object.assign({}, fatherTree.root))
-
-childTree.root.right = motherTree.root.right
-
-console.log('tree' , child);

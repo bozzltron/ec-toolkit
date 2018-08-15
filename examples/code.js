@@ -40,14 +40,13 @@ model
 
     agent.rank += agent.code.length < 300 ? 1 : 0
     agent.rank += typeof(result) == 'number' ? 1 : 0
-
-    agent.rank += agent.result > 0 ? 1 : 0
-    agent.rank += agent.result > 20 ? 1 : 0
-    agent.rank += agent.result > 30 ? 1 : 0
-    agent.rank += agent.result < 43 ? 1 : 0
+    
+    let proximity = Math.round( (1 /  Math.abs(42 - agent.result ) * 1000)) 
+    agent.rank += !isNaN(proximity) ? proximity : 0
 
     // If it produces the result we are looking for, we're done
     if(agent.result === 42) {
+      console.log("FINAL RESULT:", agent.code)
       throw "Done!"
     }
 
@@ -57,19 +56,26 @@ model
     agents = agents.sort((a, b)=>{ return b.rank - a.rank })
     
     agents.forEach((agent)=>{
-      console.log('code', agent.code, 'result', agent.result, 'rank', agent.rank)
+      console.log('code', agent.code.substring(0,300), 'length', agent.code.length, 'result', agent.result, 'rank', agent.rank)
     })
 
     return agents
   })
   .variate((agents)=>{
-    agents.unshift(agents[0].crossoverWith(agents[1]))
-    agents.unshift(agents[0].crossoverWith(agents[2]))
-    agents.unshift(agents[1].crossoverWith(agents[2]))
-    agents.unshift(agents[1].crossoverWith(agents[3]))
-    agents.unshift(agents[2].crossoverWith(agents[3]))
-    let index = Math.floor(Math.random() * Math.floor(20))
-    agents[index].mutate(1, code)
+    // 5 crossovers
+    for(let i=0; i<5; i++){
+      let mom = Math.floor(Math.random() * Math.floor(10))
+      let dad = Math.floor(Math.random() * Math.floor(10))
+      agents.unshift(agents[mom].crossoverWith(agents[dad]))
+    }
+
+    // 2 mutations
+    for(let i=0; i<1; i++){
+      let index = Math.floor(Math.random() * Math.floor(20))
+      agents[index].mutate(1, code)
+    }
+
+    // take the top 20
     return agents.slice(0,20)
   })
   .limit(1000)
