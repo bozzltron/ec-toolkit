@@ -1,5 +1,4 @@
-const BinaryTreeNode = require('./binary-tree-node'),
-  _ = require('lodash'),
+const _ = require('lodash'),
   objectAssignDeep = require('object-assign-deep'),
   uuidv4 = require('uuid/v4');
 
@@ -103,6 +102,30 @@ class BinaryTree {
   toJSON(){
     return JSON.stringify(this.root, 2, 2)
   }
+
+  mutate(nodesToMutate, options, newNode){
+    let ary = this.inOrder()
+    for(let i=0; i<nodesToMutate; i++){
+      let type = Math.floor(Math.random() * Math.floor(2))
+      let index
+      switch(type){
+        case 1:
+          // swap 
+          let mutation = _.sampleSize(options, 1)[0]
+          index = this.getRandomInt(ary.length)
+          ary[index].value = mutation
+        case 2:
+          index = this.getRandomInt(ary.length)
+          delete ary[index]
+      }
+      
+    }
+  }
+
+  getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max))
+  }
+  
 
 }
 

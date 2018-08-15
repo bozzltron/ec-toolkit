@@ -1,5 +1,5 @@
 const BinaryTree = require('../data-structures/binary-tree'),
-  BinaryTreeNode = require('../data-structures/binary-tree-node')
+  objectAssignDeep = require('object-assign-deep')
 
 describe("BinaryTree", function(){
 
@@ -94,6 +94,13 @@ describe("BinaryTree", function(){
     let child = father.crossoverWith(mother)
     expect(child.inOrderValues()).not.toEqual(father.inOrderValues())
     expect(child.inOrderValues()).not.toEqual(mother.inOrderValues())
+  })
+
+  it("should mutate", function(){
+    let copy = new BinaryTree()
+    copy.root = objectAssignDeep({}, tree.root)
+    tree.mutate(1, ['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+'])
+    expect(tree.inOrderValues()).not.toEqual(copy.inOrderValues())
   })
 
 })

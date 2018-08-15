@@ -9,14 +9,13 @@
 */
 
 var model = require('../model'),
-  Code = require('../code'),
-  reserved = require('../data/reserved'),
-  characters = require('../data/ascii')
+  Code = require('../code')
 
 model
-  .from(characters)
   .populate(20)
-  .initialize(function(){ return Code.generate(20) })
+  .initializeEach(()=>{ 
+    return {code: Code.generate(20)} 
+  })
   .rank(function(agent){
 
     // This function determines an agents fitness, which is quantified as rank.
@@ -54,6 +53,33 @@ model
 
     return rank
 
+  })
+  .select(function(agents) {
+
+    // rank genes
+    agents.forEach((agent)=>{
+      agent.rank = this.rank(agent)
+    })
+    
+    agents = Mutate.sortByRank(agents)
+    
+    // evaulate goal
+    if(agents[0].rank == Infinity){
+      // we done it
+      console.log("---------------- Result", agents[0].code)
+      this.evolving = false
+    }
+    
+    agents.forEach((agent)=>{
+      console.log("code", agent.code, "rank", agent.rank, "valid", agent.isValid, "result", agent.result)
+    })
+
+    return agents
+  })
+  .variate((agents)=>{
+    // Variation (crossover and mutation)
+    //agents = Util.crossoverGeneration(agents).map((code)=>{ return {code}})
+    return Mutate.cloneWithVariants(agents[0].code, 19, 2).map((code)=>{ return {code:code} })
   })
   .run()
 

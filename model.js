@@ -16,64 +16,50 @@ class Model {
 
 	run() {
 		this.evolving = true;
-		var trait = "";
-		var count = 0;
+		let trait = "";
+		let count = 0;
 
 		// initialize
-		var agents = [];
-		console.log(`Initialize ${this.population} agents...`)
-		for(var i=0; i<this.population; i++) {
-			agents.push({code: this.initialize()})
+		let agents = []
+    for(var i=0; i<this.population; i++) {
+			agents.push(this._initializeEach())
 		}
 
-		console.log("init agents", agents)
+		console.log(`Initialize ${this.population} agents...`)
 
 		console.log("generations", this.generations)
 		
-			if(this.sleepFor) {
-				setInterval(function(){
-					if(this.evolving && count < this.generations) {
-						agents = this.select(agents)
-						count++
-						console.log("count " + count);
-					}
-				}.bind(this), this.sleepFor)
-			} else {
-				while(this.evolving) {
-				agents = this.select(agents)
+		if(this.sleepFor) {
+			setInterval(function(){
+				if(this.evolving && count < this.generations) {
+					agents.forEach(this._rankEach)
+					agents = this._select(agents)
+					agents = this._variate(agents)
+					count++
+					console.log("count " + count);
+				}
+			}.bind(this), this.sleepFor)
+		} else {
+			while(this.evolving) {
+				agents.forEach(this._rankEach)
+				agents = this._select(agents)
+				agents = this._variate(agents)
 				count++;
 				console.log("count " + count);
 			}
-			
 		}
+
 		return this
 	}
 
-	select(agents) {
+	initializeEach(fn){
+		this._initializeEach = fn
+		return this
+	}
 
-			// rank genes
-			agents.forEach((agent)=>{
-				agent.rank = this.rank(agent)
-			})
-			
-			agents = Mutate.sortByRank(agents)
-			
-			// evaulate goal
-			if(agents[0].rank == Infinity){
-				// we done it
-				console.log("---------------- Result", agents[0].code)
-				this.evolving = false
-			}
-			
-			agents.forEach((agent)=>{
-				console.log("code", agent.code, "rank", agent.rank, "valid", agent.isValid, "result", agent.result)
-			})
-
-			// Variation (crossover and mutation)
-			//agents = Util.crossoverGeneration(agents).map((code)=>{ return {code}})
-			agents = Mutate.cloneWithVariants(agents[0].code, 19, 2).map((code)=>{ return {code:code} })
-
-			return agents
+	rankEach(fn){
+		this._rankEach = fn
+		return this
 	}
 
 	limit(generations) {
@@ -106,15 +92,24 @@ class Model {
 		return this
 	}
 
+	select(fn){
+		this._select = fn
+		return this
+	}
+
+	variate(fn) {
+		this._variate = fn
+		return this
+	}
+
 	initialize(fn){
 		this.initialize = fn
 		return this
 	}
 
-	from(data){
-		this.data = data
-		return this
-	}
+	getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max))
+  }
 
 }
 
