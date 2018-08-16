@@ -47,6 +47,7 @@ model
     // If it produces the result we are looking for, we're done
     if(agent.result === 42) {
       console.log("FINAL RESULT:", agent.code)
+      console.log('tree', agent.toJSON())
       throw "Done!"
     }
 
@@ -56,7 +57,7 @@ model
     agents = agents.sort((a, b)=>{ return b.rank - a.rank })
     
     agents.forEach((agent)=>{
-      console.log('code', agent.code.substring(0,300), 'length', agent.code.length, 'result', agent.result, 'rank', agent.rank)
+      console.log('code', agent.toJSON(), 'length', agent.code.length, 'result', agent.result, 'rank', agent.rank)
     })
 
     return agents
@@ -78,6 +79,6 @@ model
     // take the top 20
     return agents.slice(0,20)
   })
-  .limit(1000)
+  ///.limit(1000)
   .run()
 

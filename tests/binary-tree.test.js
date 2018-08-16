@@ -96,18 +96,39 @@ describe("BinaryTree", function(){
     expect(child.inOrderValues()).not.toEqual(mother.inOrderValues())
   })
 
-  it("should mutate", function(){
-    let copy = new BinaryTree()
-    copy.root = objectAssignDeep({}, tree.root)
-    tree.mutate(1, ['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+'])
-    expect(tree.inOrderValues()).not.toEqual(copy.inOrderValues())
-  })
-
   it("should append node", function(){
     let copy = new BinaryTree()
     copy.root = objectAssignDeep({}, tree.root)
     tree.appendNode(['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+'])
+    expect(tree.inOrderValues().length > copy.inOrderValues().length).toEqual(true)
+  })
+
+  it("should delete node", function(){
+    let copy = new BinaryTree()
+    copy.root = objectAssignDeep({}, tree.root)
+    tree.deleteNode()
+    expect(tree.inOrderValues().length < copy.inOrderValues().length).toEqual(true)
+  })
+
+  it("should mutate by appending a new node", function(){
+    let copy = new BinaryTree()
+    copy.root = objectAssignDeep({}, tree.root)
+    tree.mutate(1, ['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+'], 0)
+    expect(tree.inOrderValues().length > copy.inOrderValues().length).toEqual(true)
+  })
+
+  it("should mutate by swapping an old value for a new value", function(){
+    let copy = new BinaryTree()
+    copy.root = objectAssignDeep({}, tree.root)
+    tree.mutate(1, ['swap', 'values'], 1)
     expect(tree.inOrderValues()).not.toEqual(copy.inOrderValues())
+  })
+
+  it("should mutate by deleting", function(){
+    let copy = new BinaryTree()
+    copy.root = objectAssignDeep({}, tree.root)
+    tree.mutate(1, ['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+'], 2)
+    expect(tree.inOrderValues().length < copy.inOrderValues().length).toEqual(true)
   })
 
 })

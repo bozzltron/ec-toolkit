@@ -6,7 +6,7 @@ var _ = require('lodash'),
 class Model {
 
 	constructor() {
-		this.generations = undefined
+		this.generations = Infinity
 		this.target = true
 		this.parameters = []
 		this.population = 10
@@ -40,7 +40,7 @@ class Model {
 				}
 			}.bind(this), this.sleepFor)
 		} else {
-			while(this.evolving) {
+			while(this.evolving && count < this.generations) {
 				agents.forEach(this._rankEach)
 				agents = this._select(agents)
 				agents = this._variate(agents)
@@ -63,7 +63,7 @@ class Model {
 	}
 
 	limit(generations) {
-		this.generations = generations || 100000
+		this.generations = generations 
 		return this
 	}
 

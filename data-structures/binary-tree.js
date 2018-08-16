@@ -109,31 +109,45 @@ class BinaryTree {
 
   appendNode(values, ary){
     ary = ary || this.inOrder()
-    ary.filter((node)=>{ return !node.left || !node.right })
+    ary = ary.filter((node)=>{ return !node.left || !node.right })
     if(!ary[0].left) {
       ary[0].left = this.createNode(values)
     } else if(!ary[0].right) {
-      ary[0].left = this.createNode(values)
+      ary[0].right = this.createNode(values)
     }
+    return ary
   }
 
-  mutate(nodesToMutate, options, values){
-    let ary = this.inOrder()
+  deleteNode(ary){
+    ary = ary || this.inOrder()
+    ary = ary.filter((node)=>{ return node.left || node.right })
+    if(ary[0].left) {
+      console.log('delete', ary[0].left)
+      delete ary[0].left
+    } else if(ary[0].right) {
+      console.log('delete', ary[0].right)
+      delete ary[0].right
+    }
+    return ary
+  }
+
+  mutate(nodesToMutate, values, type){
+    let ary = this.inOrder(), index
     for(let i=0; i<nodesToMutate; i++){
-      let type = Math.floor(Math.random() * Math.floor(2))
-      let index
+      type = typeof(type) == 'number' ? type : Math.floor(Math.random() * Math.floor(2))
       switch(type){
         case 0: // add
-          this.appendNode(values, ary)
+          ary = this.appendNode(values, ary)
+          break;
         case 1: // swap 
-          let mutation = _.sampleSize(options, 1)[0]
+          let mutation = _.sampleSize(values, 1)[0]
           index = this.getRandomInt(ary.length)
           ary[index].value = mutation
+          break;
         case 2: // delete
-          index = this.getRandomInt(ary.length)
-          delete ary[index]
+          this.deleteNode(ary)
+          break;
       }
-      
     }
   }
 
@@ -141,7 +155,6 @@ class BinaryTree {
     return Math.floor(Math.random() * Math.floor(max))
   }
   
-
 }
 
 module.exports = BinaryTree;
