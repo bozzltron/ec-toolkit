@@ -38,10 +38,11 @@ model
       agent.rank += 1
     } catch(e) {}
 
-    agent.rank += agent.code.length < 300 ? 1 : 0
+    agent.rank -= agent.code.length > 100 ? 1 : 0
+    agent.rank += agent.code.includes('return') ? 1 : 0
     agent.rank += typeof(result) == 'number' ? 1 : 0
     
-    let proximity = Math.round( (1 /  Math.abs(42 - agent.result ) * 1000)) 
+    let proximity = Math.round( (1 /  Math.abs(42 - agent.result ) * 100)) 
     agent.rank += !isNaN(proximity) ? proximity : 0
 
     // If it produces the result we are looking for, we're done
@@ -56,9 +57,11 @@ model
     // Take top half
     agents = agents.sort((a, b)=>{ return b.rank - a.rank })
     
+    let status = ''
     agents.forEach((agent)=>{
-      console.log('code', agent.toJSON(), 'length', agent.code.length, 'result', agent.result, 'rank', agent.rank)
+      status += `code  ${agent.code.substring(0,80)} length  ${agent.code.length}  result  ${agent.result}  rank  ${agent.rank}\n`
     })
+    model.log(status, 20)
 
     return agents
   })
@@ -70,7 +73,7 @@ model
       agents.unshift(agents[mom].crossoverWith(agents[dad]))
     }
 
-    // 2 mutations
+    // 1 mutations
     for(let i=0; i<1; i++){
       let index = Math.floor(Math.random() * Math.floor(20))
       agents[index].mutate(1, code)

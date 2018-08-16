@@ -109,7 +109,15 @@ class Model {
 
 	getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max))
-  }
+	}
+	
+	log(str, size){
+		process.stdout.write(str);
+		for(let i=0;i<size;i++){
+			process.stdout.clearLine();
+		}
+		process.stdout.cursorTo(0);
+	}
 
 }
 
