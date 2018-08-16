@@ -122,10 +122,8 @@ class BinaryTree {
     ary = ary || this.inOrder()
     ary = ary.filter((node)=>{ return node.left || node.right })
     if(ary[0].left) {
-      console.log('delete', ary[0].left)
       delete ary[0].left
     } else if(ary[0].right) {
-      console.log('delete', ary[0].right)
       delete ary[0].right
     }
     return ary

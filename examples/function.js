@@ -1,4 +1,5 @@
 'use strict;'
+const cTable = require('console.table');
 
 /*
   Evolving JavaScript Code
@@ -57,11 +58,10 @@ model
     // Take top half
     agents = agents.sort((a, b)=>{ return b.rank - a.rank })
     
-    let status = ''
-    agents.forEach((agent)=>{
-      status += `code  ${agent.code.substring(0,80)} length  ${agent.code.length}  result  ${agent.result}  rank  ${agent.rank}\n`
+    let table = agents.map((agent)=>{
+      return { code:agent.code.substring(0,80), length:agent.code.length,  result:agent.result,  rank: agent.rank}
     })
-    model.log(status, 20)
+    console.table(table)
 
     return agents
   })
@@ -82,6 +82,5 @@ model
     // take the top 20
     return agents.slice(0,20)
   })
-  ///.limit(1000)
   .run()
 

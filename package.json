@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "binarytree": "^0.3.4",
+    "console.table": "^0.10.0",
     "jasmine-node": "^1.15.0",
     "lodash": "^4.17.10",
     "object-assign-deep": "^0.4.0",

@@ -1,4 +1,5 @@
 'use strict;'
+const cTable = require('console.table');
 
 /*
   Evolving a simple Math equation
@@ -9,17 +10,18 @@
 */
 
 var model = require('../model'),
-  Code = require('../code')
+  Code = require('../code'),
+  Mutate = require('../mutate')
 
 model
   .populate(20)
   .initializeEach(()=>{ 
     return {code: Code.generate(20)} 
   })
-  .rank(function(agent){
+  .rankEach(function(agent){
 
     // This function determines an agents fitness, which is quantified as rank.
-    let rank = 0
+    agent.rank = 0
 
     // Evaluate the candidate code
     try { 
@@ -28,51 +30,37 @@ model
 
     // If it produces the result we are looking for, we're done
     if(agent.result === 42) {
-      return Infinity
+      console.log("FINAL RESULT:", agent.code)
+      throw "Done!"
     }
 
     // A higher rank for code that contains numbers
-    rank += /[0-9]/.test(agent.code) ? 1 : 0
+    agent.rank += /[0-9]/.test(agent.code) ? 1 : 0
 
     // A higher rank for code that contains math operators
-    rank += /[-+*\/]/.test(agent.code) ? 1 : 0
+    agent.rank += /[-+*\/]/.test(agent.code) ? 1 : 0
 
     // A higher rank for code that is less than 20 characters.  This prevents code "bloat".
-    rank += agent.code.length < 20 ? 1 : 0
+    agent.rank += agent.code.length < 20 ? 1 : 0
 
     // A higher rank for code that evaluates to a number value
-    rank += typeof(agent.result) == 'number' ? 1 : 0
+    agent.rank += typeof(agent.result) == 'number' ? 1 : 0
 
     if(typeof(agent.result) == 'number'){
       // A higher rank as the number results approach the value we are looking for
-      rank += agent.result > 0 && agent.result < 50 ? 1 : 0
-      rank += agent.result > 20 && agent.result < 50 ? 1 : 0
-      rank += agent.result > 30 && agent.result < 50 ? 1 : 0
-      rank += agent.result > 40 && agent.result < 50 ? 1 : 0
+      let proximity = Math.round( (1 /  Math.abs(42 - agent.result ) * 100)) 
+      agent.rank += !isNaN(proximity) ? proximity : 0
     }
-
-    return rank
 
   })
   .select(function(agents) {
 
-    // rank genes
-    agents.forEach((agent)=>{
-      agent.rank = this.rank(agent)
+    agents = agents.sort((a, b)=>{ return b.rank - a.rank })
+    
+    let table = agents.map((agent)=>{
+      return { code:agent.code.substring(0,80), length:agent.code.length,  result:agent.result,  rank: agent.rank}
     })
-    
-    agents = Mutate.sortByRank(agents)
-    
-    // evaulate goal
-    if(agents[0].rank == Infinity){
-      // we done it
-      console.log("---------------- Result", agents[0].code)
-      this.evolving = false
-    }
-    
-    agents.forEach((agent)=>{
-      console.log("code", agent.code, "rank", agent.rank, "valid", agent.isValid, "result", agent.result)
-    })
+    console.table(table)
 
     return agents
   })

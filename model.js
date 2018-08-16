@@ -16,7 +16,6 @@ class Model {
 
 	run() {
 		this.evolving = true;
-		let trait = "";
 		let count = 0;
 
 		// initialize
@@ -27,7 +26,7 @@ class Model {
 
 		console.log(`Initialize ${this.population} agents...`)
 
-		console.log("generations", this.generations)
+		console.log(`limit to ${this.generations} generations..`)
 		
 		if(this.sleepFor) {
 			setInterval(function(){
@@ -109,14 +108,6 @@ class Model {
 
 	getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max))
-	}
-	
-	log(str, size){
-		process.stdout.write(str);
-		for(let i=0;i<size;i++){
-			process.stdout.clearLine();
-		}
-		process.stdout.cursorTo(0);
 	}
 
 }
