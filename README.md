@@ -7,7 +7,7 @@ EC Toolkit comes with model.js, which allows you to quickly setup each step up a
 ```
 const model = require('./model');
 model
-  .populate(40) // Start with an initial populuation of entities
+  .populate(40) // Start with an initial populuation of agents
   .initializeEach(()=>{ 
     return {code: 'randomly generated code'};   // Initialize each agent with this function by returning the agents initial state.
   })
