@@ -2,7 +2,7 @@
 The purpose of this module is to provide the tools needed to explore Evolutionary Computing with JavaScript.
 
 ### model.js
-EC Toolkit comes with model.js, which allows you to quickly setup each step up an evolutionary model to solve a problem.
+EC Toolkit comes with model.js which allows you to quickly setup each step of an evolutionary model.
 
 ```
 const model = require('./model');
