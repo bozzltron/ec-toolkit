@@ -18,7 +18,7 @@ model
   .populate(20)
   .initializeEach(()=>{ 
     let agent = new GeneticString()
-    agent.generate(ascii, 40)
+    agent.generate(ascii, 20)
     return agent
   })
   .rankEach(function(agent){
@@ -64,18 +64,18 @@ model
     })
     console.table(table)
 
-    return agents.slice(0,20)
+    return agents.slice(0,15)
   })
   .variate((agents)=>{
-    // 20 crossovers
-    // for(let i=0; i<20; i++){
-    //   let mom = Math.floor(Math.random() * Math.floor(20))
-    //   let dad = Math.floor(Math.random() * Math.floor(20))
-    //   agents.unshift(new GeneticString(agents[mom].crossoverWith(agents[dad])))
-    // }
+    // crossovers
+    for(let i=0; i<5; i++){
+      let mom = Math.floor(Math.random() * Math.floor(15))
+      let dad = Math.floor(Math.random() * Math.floor(15))
+      agents.unshift(new GeneticString(agents[mom].crossoverWith(agents[dad])))
+    }
 
-    // 1 mutations
-    for(let i=0; i<20; i++){
+    // mutations
+    for(let i=0; i<1; i++){
       let index = Math.floor(Math.random() * Math.floor(20))
       agents[index].mutate(ascii, 1)
     }

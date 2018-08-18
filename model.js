@@ -1,7 +1,6 @@
 'use strict;'
 
-var _ = require('lodash'),
-	Mutate = require('./mutate')
+var _ = require('lodash')
 
 class Model {
 

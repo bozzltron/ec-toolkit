@@ -1,5 +1,8 @@
 'use strict;'
-const cTable = require('console.table');
+const cTable = require('console.table'),
+  model = require('../model'),
+  GeneticString = require('../data-structures/genetic-string'),
+  ascii = require('../data/ascii')
 
 /*
   Evolving a simple Math equation
@@ -9,14 +12,12 @@ const cTable = require('console.table');
   results in 42, without the program knowing anything about mathematics.
 */
 
-var model = require('../model'),
-  Code = require('../code'),
-  Mutate = require('../mutate')
-
 model
   .populate(20)
   .initializeEach(()=>{ 
-    return {code: Code.generate(20)} 
+    let agent = new GeneticString()
+    agent.generate(ascii, 20)
+    return agent
   })
   .rankEach(function(agent){
 
@@ -62,12 +63,22 @@ model
     })
     console.table(table)
 
-    return agents
+    return agents.slice(0,15)
   })
   .variate((agents)=>{
-    // Variation (crossover and mutation)
-    //agents = Util.crossoverGeneration(agents).map((code)=>{ return {code}})
-    return Mutate.cloneWithVariants(agents[0].code, 19, 2).map((code)=>{ return {code:code} })
+    // crossovers
+    for(let i=0; i<5; i++){
+      let mom = Math.floor(Math.random() * Math.floor(15))
+      let dad = Math.floor(Math.random() * Math.floor(15))
+      agents.unshift(new GeneticString(agents[mom].crossoverWith(agents[dad])))
+    }
+
+    // mutations
+    for(let i=0; i<1; i++){
+      let index = Math.floor(Math.random() * Math.floor(20))
+      agents[index].mutate(ascii, 1)
+    }
+    return agents
   })
   .run()
 
