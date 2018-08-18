@@ -11,13 +11,15 @@ const cTable = require('console.table'),
 */
 
 var model = require('../model'),
-  Mutate = require('../mutate'),
+  GeneticString = require('../data-structures/genetic-string'),
   ascii = require('../data/ascii')
 
 model
   .populate(20)
   .initializeEach(()=>{ 
-    return {code: _.sampleSize(ascii, 10).join('')} 
+    let agent = new GeneticString()
+    agent.generate(ascii, 40)
+    return agent
   })
   .rankEach(function(agent){
 
@@ -43,6 +45,8 @@ model
 
     agent.rank += agent.matches && !isNaN(agent.matches[0]) ? 1 : 0
 
+    agent.rank += !agent.code.includes('4') && !agent.code.includes('2') ? 1 : 0
+
     // If it produces the result we are looking for, we're done
     if(agent.matches && agent.matches[0] == '42') {
       console.log("FINAL RESULT:", `"I turned 42 today".match(${agent.code})`)
@@ -60,12 +64,23 @@ model
     })
     console.table(table)
 
-    return agents
+    return agents.slice(0,20)
   })
   .variate((agents)=>{
-    // Variation (crossover and mutation)
-    //agents = Util.crossoverGeneration(agents).map((code)=>{ return {code}})
-    return Mutate.cloneWithVariants(agents[0].code, 19, 2).map((code)=>{ return {code:code} })
+    // 20 crossovers
+    // for(let i=0; i<20; i++){
+    //   let mom = Math.floor(Math.random() * Math.floor(20))
+    //   let dad = Math.floor(Math.random() * Math.floor(20))
+    //   agents.unshift(new GeneticString(agents[mom].crossoverWith(agents[dad])))
+    // }
+
+    // 1 mutations
+    for(let i=0; i<20; i++){
+      let index = Math.floor(Math.random() * Math.floor(20))
+      agents[index].mutate(ascii, 1)
+    }
+
+    return agents;
   })
   .run()
 

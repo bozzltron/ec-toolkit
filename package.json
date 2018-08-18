@@ -4,7 +4,7 @@
   "description": "Evolutionary Computing Toolkit",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/jasmine-node --matchall tests/binary-tree.test.js"
+    "test": "node_modules/.bin/jasmine-node --matchall tests"
   },
   "author": "Michael Bosworth",
   "license": "ISC",

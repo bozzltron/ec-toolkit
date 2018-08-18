@@ -16,7 +16,7 @@ var model = require('../model'),
   reserved = require('../data/reserved'),
   ascii = require('../data/ascii'),
   operators = require('../data/operators'),
-  code = reserved.concat(Array.from('0123456789P[]{}:,;()')).concat(operators) 
+  code = reserved.concat(Array.from('0123456789P[]{}:,;()')).concat(operators).concat('arguments[0]')
 
 model
   .populate(40)
@@ -35,10 +35,11 @@ model
       agent.code = agent.inOrderValues().join(' ')
       agent.compiled = Function(agent.code)
       agent.rank += 1
-      agent.result = agent.compiled()
+      agent.result = agent.call({}, 3)
       agent.rank += 1
     } catch(e) {}
 
+    agent.rank += agent.code.includes('arguments[0]') ? 1 : 0
     agent.rank -= agent.code.length > 100 ? 1 : 0
     agent.rank += agent.code.includes('return') ? 1 : 0
     agent.rank += typeof(result) == 'number' ? 1 : 0

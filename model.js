@@ -8,10 +8,9 @@ class Model {
 	constructor() {
 		this.generations = Infinity
 		this.target = true
-		this.parameters = []
 		this.population = 10
 		this.sleepFor = 0
-		_.bindAll(this, 'where', 'run', 'populate', 'limit', 'produces', 'select')
+		_.bindAll(this, 'run', 'populate', 'limit', 'select')
 	}
 
 	run() {
@@ -63,16 +62,6 @@ class Model {
 
 	limit(generations) {
 		this.generations = generations 
-		return this
-	}
-
-	where() {
-		this.params = Array.from(arguments)
-		return this; 
-	}
-
-	produces(target) {
-		this.target = target
 		return this
 	}
 
