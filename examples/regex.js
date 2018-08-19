@@ -15,11 +15,14 @@ var model = require('../model'),
   ascii = require('../data/ascii')
 
 model
-  .populate(20)
+  .populate(40)
   .initializeEach(()=>{ 
     let agent = new GeneticString()
     agent.generate(ascii, 20)
     return agent
+  })
+  .terminate((agent)=>{
+    return agent.matches && agent.matches[0] == '42'
   })
   .rankEach(function(agent){
 
@@ -39,20 +42,13 @@ model
       agent.rank += 1
     } catch(e) {}
 
-    agent.rank + agent.code.length < 10 ? 1 : 0
+    agent.rank + agent.code.length < 20 ? 1 : 0
 
     agent.rank += agent.matches && agent.matches.length > 0 ? 1 : 0
 
     agent.rank += agent.matches && !isNaN(agent.matches[0]) ? 1 : 0
 
     agent.rank += !agent.code.includes('4') && !agent.code.includes('2') ? 1 : 0
-
-    // If it produces the result we are looking for, we're done
-    if(agent.matches && agent.matches[0] == '42') {
-      console.log("FINAL RESULT:", `"I turned 42 today".match(${agent.code})`)
-      console.log(agent.matches)
-      throw "Done!"
-    }
 
   })
   .select(function(agents) {
@@ -64,11 +60,11 @@ model
     })
     console.table(table)
 
-    return agents.slice(0,15)
+    return agents.slice(0,20)
   })
   .variate((agents)=>{
     // crossovers
-    for(let i=0; i<5; i++){
+    for(let i=0; i<20; i++){
       let mom = Math.floor(Math.random() * Math.floor(15))
       let dad = Math.floor(Math.random() * Math.floor(15))
       agents.unshift(new GeneticString(agents[mom].crossoverWith(agents[dad])))
@@ -83,4 +79,8 @@ model
     return agents;
   })
   .run()
+  .then((agent)=>{
+    console.log("FINAL RESULT", agent.code)
+    console.log(agent.matches)
+  })
 

@@ -13,40 +13,56 @@ class Model {
 	}
 
 	run() {
-		this.evolving = true;
-		let count = 0;
 
-		// initialize
-		let agents = []
-    for(var i=0; i<this.population; i++) {
-			agents.push(this._initializeEach())
-		}
-
-		console.log(`Initialize ${this.population} agents...`)
-
-		console.log(`limit to ${this.generations} generations..`)
-		
-		if(this.sleepFor) {
-			setInterval(function(){
-				if(this.evolving && count < this.generations) {
-					agents.forEach(this._rankEach)
+		return new Promise(function(resolve, reject) {
+			
+			this.evolving = true;
+			let count = 0;
+	
+			// initialize
+			let agents = []
+			for(var i=0; i<this.population; i++) {
+				agents.push(this._initializeEach())
+			}
+	
+			console.log(`Initialize ${this.population} agents...`)
+	
+			console.log(`limit to ${this.generations} generations..`)
+			
+			if(this.sleepFor) {
+				setInterval(function(){
+					if(this.evolving && count < this.generations) {
+						agents.forEach((agent)=>{ 
+							this._rankEach(agent)
+							if(this._terminate(agent)) {
+								this.evolving = false
+								resolve(agent)
+							}
+						})
+						agents = this._select(agents)
+						agents = this._variate(agents)
+						count++
+						console.log("count " + count);
+					}
+				}.bind(this), this.sleepFor)
+			} else {
+				while(this.evolving && count < this.generations) {
+					agents.forEach((agent)=>{ 
+						this._rankEach(agent)
+						if(this._terminate(agent)) {
+							this.evolving = false
+							resolve(agent)
+						}
+					})
 					agents = this._select(agents)
 					agents = this._variate(agents)
-					count++
+					count++;
 					console.log("count " + count);
 				}
-			}.bind(this), this.sleepFor)
-		} else {
-			while(this.evolving && count < this.generations) {
-				agents.forEach(this._rankEach)
-				agents = this._select(agents)
-				agents = this._variate(agents)
-				count++;
-				console.log("count " + count);
-			}
-		}
+			}			
 
-		return this
+		}.bind(this));
+
 	}
 
 	initializeEach(fn){
@@ -86,6 +102,11 @@ class Model {
 
 	variate(fn) {
 		this._variate = fn
+		return this
+	}
+
+	terminate(fn) {
+		this._terminate = fn
 		return this
 	}
 

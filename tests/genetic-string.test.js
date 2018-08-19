@@ -49,6 +49,8 @@ describe("GeneticString", function(){
     let child = dad.crossoverWith(mom)
     expect(dad.code).not.toEqual(child)
     expect(mom.code).not.toEqual(child)
+    expect(dad.code.length == child.length).toEqual(true)
+    expect(mom.code.length == child.length).toEqual(true)
   })
   
 });

@@ -12,7 +12,6 @@ const cTable = require('console.table');
 
 var model = require('../model'),
   BinaryTree = require('../data-structures/binary-tree'),
-  Code = require('../code'),
   reserved = require('../data/reserved'),
   ascii = require('../data/ascii'),
   operators = require('../data/operators'),
@@ -24,6 +23,9 @@ model
     let tree = new BinaryTree()
     tree.generate(code, 7)
     return tree
+  })
+  .terminate((agent)=>{
+    return agent.result === 42
   })
   .rankEach((agent)=>{
 
@@ -46,13 +48,6 @@ model
     
     let proximity = Math.round( (1 /  Math.abs(42 - agent.result ) * 100)) 
     agent.rank += !isNaN(proximity) ? proximity : 0
-
-    // If it produces the result we are looking for, we're done
-    if(agent.result === 42) {
-      console.log("FINAL RESULT:", agent.code)
-      console.log('tree', agent.toJSON())
-      throw "Done!"
-    }
 
   })
   .select((agents)=>{
@@ -84,4 +79,8 @@ model
     return agents.slice(0,40)
   })
   .run()
+  .then((agent)=>{
+    console.log("FINAL RESULT", agent.code)
+    console.log('tree', agent.toJSON())        
+  })
 

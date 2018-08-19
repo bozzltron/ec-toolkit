@@ -19,7 +19,10 @@ model
     agent.generate(ascii, 20)
     return agent
   })
-  .rankEach(function(agent){
+  .terminate((agent)=>{
+    return isNaN(agent.code) && !agent.code.includes('42') && agent.result == 42
+  })
+  .rankEach((agent)=>{
 
     // This function determines an agents fitness, which is quantified as rank.
     agent.rank = 0
@@ -28,12 +31,6 @@ model
     try { 
       agent.result = eval(agent.code)
     } catch(e) {}
-
-    // If it produces the result we are looking for, we're done
-    if(agent.result === 42) {
-      console.log("FINAL RESULT:", agent.code)
-      throw "Done!"
-    }
 
     // A higher rank for code that contains numbers
     agent.rank += /[0-9]/.test(agent.code) ? 1 : 0
@@ -54,7 +51,7 @@ model
     }
 
   })
-  .select(function(agents) {
+  .select((agents) =>{
 
     agents = agents.sort((a, b)=>{ return b.rank - a.rank })
     
@@ -81,4 +78,7 @@ model
     return agents
   })
   .run()
+  .then((agent)=>{
+    console.log("FINAL RESULT", agent.code)
+  })
 

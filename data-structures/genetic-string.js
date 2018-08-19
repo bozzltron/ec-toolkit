@@ -41,7 +41,7 @@ class GeneticString {
   crossoverWith(mom) {
     let breakpoint = this.getRandomInt(this.code.length), 
       dad = this.code.split('').slice(0, breakpoint)
-    mom = mom.code.split('').slice(breakpoint, mom.code.length - 1);    
+    mom = mom.code.split('').slice(breakpoint, mom.code.length);    
     return dad.concat(mom).join('')
   }
 
