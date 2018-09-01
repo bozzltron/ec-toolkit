@@ -4,7 +4,8 @@
   "description": "Evolutionary Computing Toolkit",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/jasmine-node --matchall tests"
+    "test": "nyc jasmine-node --matchall tests",
+    "start": "node cli.js"
   },
   "author": "Michael Bosworth",
   "license": "ISC",
@@ -16,5 +17,8 @@
     "object-assign-deep": "^0.4.0",
     "tree-model": "^1.0.7",
     "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "nyc": "^12.0.2"
   }
 }

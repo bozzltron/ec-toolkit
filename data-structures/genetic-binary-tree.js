@@ -2,7 +2,7 @@ const _ = require('lodash'),
   objectAssignDeep = require('object-assign-deep'),
   uuidv4 = require('uuid/v4');
 
-class BinaryTree {
+class GeneticBinaryTree {
 
   constructor(root){
     this.root = root
@@ -78,7 +78,7 @@ class BinaryTree {
   }
 
   crossoverWith(tree) {
-    let child = new BinaryTree()
+    let child = new GeneticBinaryTree()
     child.root = objectAssignDeep({}, this.root)
     let removalPrune = child.prune()
     let replacementPrune = tree.prune()
@@ -155,4 +155,4 @@ class BinaryTree {
   
 }
 
-module.exports = BinaryTree;
+module.exports = GeneticBinaryTree;

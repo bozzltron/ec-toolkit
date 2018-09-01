@@ -1,12 +1,12 @@
-const BinaryTree = require('../data-structures/binary-tree'),
+const GeneticBinaryTree = require('../data-structures/genetic-binary-tree'),
   objectAssignDeep = require('object-assign-deep')
 
-describe("BinaryTree", function(){
+describe("GeneticBinaryTree", function(){
 
   let tree;
 
   beforeEach(function(){
-    tree = new BinaryTree({
+    tree = new GeneticBinaryTree({
       value: ';',
       left: {
         value: '+',
@@ -31,7 +31,7 @@ describe("BinaryTree", function(){
 
   it("should initialize", function(){
     let root = {value: '+'}
-    tree = new BinaryTree(root)
+    tree = new GeneticBinaryTree(root)
     expect(tree.root).toEqual(root);
   })
 
@@ -40,18 +40,18 @@ describe("BinaryTree", function(){
   })
 
   it("should prune a subtree from a tree", function(){
-    let branch = new BinaryTree(tree.prune())
+    let branch = new GeneticBinaryTree(tree.prune())
     expect(branch.inOrderValues()).not.toEqual(tree.inOrderValues())
   })
 
   it("should generate a tree from a set of values", function(){
-    let tree = new BinaryTree()
+    let tree = new GeneticBinaryTree()
     tree.generate(['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+'], 10, true)
     expect(tree.inOrderValues().length).toEqual(10)
   })
 
   it("should find a parent node", function(){
-    tree = new BinaryTree({
+    tree = new GeneticBinaryTree({
       "value": ";",
       "id": "f4e7200e-f157-448b-b5b2-512aaef6873f",
       "left": {
@@ -87,9 +87,9 @@ describe("BinaryTree", function(){
 
   it("should crossover two trees resulting in a tree unique from its parents", function(){
     let values = ['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+']
-    let father = new BinaryTree()
+    let father = new GeneticBinaryTree()
     father.generate(values, 6, true)
-    let mother = new BinaryTree()
+    let mother = new GeneticBinaryTree()
     mother.generate(values, 6, true)
     let child = father.crossoverWith(mother)
     expect(child.inOrderValues()).not.toEqual(father.inOrderValues())
@@ -97,35 +97,35 @@ describe("BinaryTree", function(){
   })
 
   it("should append node", function(){
-    let copy = new BinaryTree()
+    let copy = new GeneticBinaryTree()
     copy.root = objectAssignDeep({}, tree.root)
     tree.appendNode(['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+'])
     expect(tree.inOrderValues().length > copy.inOrderValues().length).toEqual(true)
   })
 
   it("should delete node", function(){
-    let copy = new BinaryTree()
+    let copy = new GeneticBinaryTree()
     copy.root = objectAssignDeep({}, tree.root)
     tree.deleteNode()
     expect(tree.inOrderValues().length < copy.inOrderValues().length).toEqual(true)
   })
 
   it("should mutate by appending a new node", function(){
-    let copy = new BinaryTree()
+    let copy = new GeneticBinaryTree()
     copy.root = objectAssignDeep({}, tree.root)
     tree.mutate(1, ['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+'], 0)
     expect(tree.inOrderValues().length > copy.inOrderValues().length).toEqual(true)
   })
 
   it("should mutate by swapping an old value for a new value", function(){
-    let copy = new BinaryTree()
+    let copy = new GeneticBinaryTree()
     copy.root = objectAssignDeep({}, tree.root)
     tree.mutate(1, ['swap', 'values'], 1)
     expect(tree.inOrderValues()).not.toEqual(copy.inOrderValues())
   })
 
   it("should mutate by deleting", function(){
-    let copy = new BinaryTree()
+    let copy = new GeneticBinaryTree()
     copy.root = objectAssignDeep({}, tree.root)
     tree.mutate(1, ['let', 'x','=', '3', ';', 'y', '-', '2', '/', '+'], 2)
     expect(tree.inOrderValues().length < copy.inOrderValues().length).toEqual(true)

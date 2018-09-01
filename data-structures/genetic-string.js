@@ -1,4 +1,4 @@
-const _ = require('lodash')
+const util = require('../util')
 
 class GeneticString {
 
@@ -8,30 +8,29 @@ class GeneticString {
   }
 
   generate (characters, howMuch){
-    this.code = _.sampleSize(characters, howMuch).join('')
+    this.code = util.sample(characters, howMuch)
   }
 
   mutate (characters, howMuch, type) {
-    let ary = this.code.split("")
     type = typeof(type) == 'number' ? type : this.getRandomInt(3)
     for(let i=0; i<howMuch; i++){
-      let index = this.getRandomInt(ary.length)
+      let index = this.getRandomInt(this.code.length-1)
+      let sample = util.sample(characters)
       switch(type){
         case 0:
           // add 
-          ary.push(_.sampleSize(characters, 1)[0])
+          this.code = this.code.concat(sample)
         break;
         case 1:
           // swap
-            ary[index] = _.sampleSize(characters, 1)[0]
+            this.code = this.replaceAt(index, sample)
         break;
         case 2:
           // remove
-          ary.splice(index, 1);
+          this.code = this.code.slice(0,index) + this.code.slice(index+1, this.code.length)
         break
       }
     }
-    this.code = ary.join("")
   }
 
   getRandomInt (max) {
@@ -39,10 +38,14 @@ class GeneticString {
   }
 
   crossoverWith(mom) {
-    let breakpoint = this.getRandomInt(this.code.length), 
+    let breakpoint = util.getRandomNumberBetween(1,this.code.length), 
       dad = this.code.split('').slice(0, breakpoint)
     mom = mom.code.split('').slice(breakpoint, mom.code.length);    
     return dad.concat(mom).join('')
+  }
+
+  replaceAt (index, replacement) {
+    return this.code.substr(0, index) + replacement + this.code.substr(index + replacement.length);
   }
 
 }

@@ -11,7 +11,7 @@ const cTable = require('console.table');
 */
 
 var model = require('../model'),
-  BinaryTree = require('../data-structures/binary-tree'),
+  GeneticBinaryTree = require('../data-structures/genetic-binary-tree'),
   reserved = require('../data/reserved'),
   ascii = require('../data/ascii'),
   operators = require('../data/operators'),
@@ -20,7 +20,7 @@ var model = require('../model'),
 model
   .populate(40)
   .initializeEach(()=>{ 
-    let tree = new BinaryTree()
+    let tree = new GeneticBinaryTree()
     tree.generate(code, 7)
     return tree
   })

@@ -1,88 +1,74 @@
 'use strict;'
 
-var _ = require('lodash')
+const cTable = require('console.table'),
+	 AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
 
 class Model {
 
-	constructor() {
-		this.generations = Infinity
-		this.target = true
-		this.population = 10
+	constructor(config) {
 		this.sleepFor = 0
-		_.bindAll(this, 'run', 'populate', 'limit', 'select')
+		this.config = Object.assign({}, {
+			generations: Infinity,
+			population: 0,
+			keep: 0,
+			crossovers: 0,
+			mutations: 0,
+			values: []
+		}, config)
 	}
 
 	run() {
 
-		return new Promise(function(resolve, reject) {
+		return new Promise(async function(resolve, reject) {
 			
 			this.evolving = true;
-			let count = 0;
+			this.count = 0;
 	
 			// initialize
 			let agents = []
-			for(var i=0; i<this.population; i++) {
-				agents.push(this._initializeEach())
+			for(var i=0; i<this.config.population; i++) {
+				agents.push(this.initializeEach.bind(this)())
 			}
 	
-			console.log(`Initialize ${this.population} agents...`)
-	
-			console.log(`limit to ${this.generations} generations..`)
+			if(this.config.log) {
+				console.log(`Initialize ${this.config.population} agents...`)
+				console.log(`limit to ${this.config.generations} generations...`)
+			}
 			
 			if(this.sleepFor) {
 				setInterval(function(){
-					if(this.evolving && count < this.generations) {
-						agents.forEach((agent)=>{ 
-							this._rankEach(agent)
-							if(this._terminate(agent)) {
+					if(this.evolving && this.count < this.config.generations) {
+						for(let i=0; i<agents.length; i++){
+							let agent = agents[i]
+							this.rankEach(agent)
+							if(this.terminate(agent)) {
 								this.evolving = false
-								resolve(agent)
+								resolve(agent, this.count)
 							}
-						})
-						agents = this._select(agents)
-						agents = this._variate(agents)
-						count++
-						console.log("count " + count);
+						}
+						agents = this.select(agents)
+						agents = this.variate.bind(this)(agents)
+						this.count++
 					}
 				}.bind(this), this.sleepFor)
 			} else {
-				while(this.evolving && count < this.generations) {
-					agents.forEach((agent)=>{ 
-						this._rankEach(agent)
-						if(this._terminate(agent)) {
+				while(this.evolving && this.count < this.config.generations) {
+					for(let i=0; i<agents.length; i++){
+						let agent = agents[i]
+						this.rankEach instanceof AsyncFunction ? await this.rankEach(agent) : this.rankEach(agent)
+						if(this.terminate(agent)) {
 							this.evolving = false
-							resolve(agent)
+							resolve(agent, this.count)
 						}
-					})
-					agents = this._select(agents)
-					agents = this._variate(agents)
-					count++;
-					console.log("count " + count);
+					}
+					agents = this.select(agents)
+					agents = this.variate.bind(this)(agents)
+					this.count++;
 				}
 			}			
-
+			resolve(agents[0], this.count)
 		}.bind(this));
 
-	}
-
-	initializeEach(fn){
-		this._initializeEach = fn
-		return this
-	}
-
-	rankEach(fn){
-		this._rankEach = fn
-		return this
-	}
-
-	limit(generations) {
-		this.generations = generations 
-		return this
-	}
-
-	populate(population){
-		this.population = population
-		return this
 	}
 
 	sleep(sec) {
@@ -90,35 +76,31 @@ class Model {
 		return this;
 	}
 
-	rank(fn) {
-		this.rank = fn
-		return this
+	select(agents){
+		agents = agents.sort((a, b)=>{ return b.rank - a.rank })
+		return agents.slice(0, this.config.keep)
 	}
 
-	select(fn){
-		this._select = fn
-		return this
+	variate(agents){
+    for(let i=0; i<this.config.crossovers; i++){
+      let mom = util.getRandomNumberBetween(0, agents.length)
+      let dad = util.getRandomNumberBetween(0, agents.length)
+      agents.push(agents[mom].crossoverWith(agents[dad]))
+		}
+    for(let i=0; i<this.config.mutations; i++){
+      let index = util.getRandomNumberBetween(0, agents.length)
+      agents[index].mutate(1, this.config.values)
+    }
+		return agents
 	}
 
-	variate(fn) {
-		this._variate = fn
-		return this
-	}
-
-	terminate(fn) {
-		this._terminate = fn
-		return this
-	}
-
-	initialize(fn){
-		this.initialize = fn
-		return this
-	}
-
-	getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max))
+	logEach(agents){
+		let table = agents.map((agent)=>{
+      return { code:agent.code.substring(0,50), length:agent.code.length,  result:agent.result,  matches: agent.matches, rank: agent.rank}
+    })
+    console.table(table)
 	}
 
 }
 
-module.exports = new Model();
+module.exports = Model;

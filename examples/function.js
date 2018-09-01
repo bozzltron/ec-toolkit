@@ -11,7 +11,7 @@ const cTable = require('console.table');
 */
 
 var model = require('../model'),
-  BinaryTree = require('../data-structures/binary-tree'),
+  GeneticBinaryTree = require('../data-structures/genetic-binary-tree'),
   reserved = require('../data/reserved'),
   ascii = require('../data/ascii'),
   operators = require('../data/operators'),
@@ -20,7 +20,7 @@ var model = require('../model'),
 model
   .populate(40)
   .initializeEach(()=>{ 
-    let tree = new BinaryTree()
+    let tree = new GeneticBinaryTree()
     tree.generate(code, 7)
     return tree
   })
@@ -58,24 +58,24 @@ model
     })
     console.table(table)
 
-    return agents
+    // take the top
+    return agents.slice(0,30)
   })
   .variate((agents)=>{
-    // 10 crossovers
+    // crossovers
     for(let i=0; i<10; i++){
       let mom = Math.floor(Math.random() * Math.floor(10))
       let dad = Math.floor(Math.random() * Math.floor(10))
       agents.unshift(agents[mom].crossoverWith(agents[dad]))
     }
 
-    // 1 mutations
+    // mutations
     for(let i=0; i<1; i++){
-      let index = Math.floor(Math.random() * Math.floor(20))
+      let index = Math.floor(Math.random() * Math.floor(40))
       agents[index].mutate(1, code)
     }
-
-    // take the top 20
-    return agents.slice(0,40)
+    
+    return agents
   })
   .run()
   .then((agent)=>{
