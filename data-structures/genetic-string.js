@@ -11,9 +11,9 @@ class GeneticString {
     this.code = util.sample(characters, howMuch)
   }
 
-  mutate (characters, howMuch, type) {
+  mutate (charsToMutate, characters, type) {
     type = typeof(type) == 'number' ? type : this.getRandomInt(3)
-    for(let i=0; i<howMuch; i++){
+    for(let i=0; i<charsToMutate; i++){
       let index = this.getRandomInt(this.code.length-1)
       let sample = util.sample(characters)
       switch(type){

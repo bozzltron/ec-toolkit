@@ -19,10 +19,10 @@ async function run() {
     config.generations = Infinity
     config.log = true
     console.log("optimized config", config)
-  } 
-
-  let result = await new Model(config).run()
-  console.log("FINAL RESULT", agent)
+  } else {
+    let result = await new Model(config).run()
+    console.log("FINAL RESULT", result)
+  }
   
 }
 

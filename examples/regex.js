@@ -21,16 +21,17 @@ class EvolveRegexPatternModel extends Model {
     super(Object.assign({
       values: ascii,
       log:true,
-      crossovers:7,
-      keep:90,
-      mutations:74,
-      population:100
+      population: 370,
+      keep: 22,
+      crossovers: 148,
+      mutations: 185,
+      initialSize: 2    
     }, config))
   }
 
   initializeEach(){ 
     let agent = new GeneticString()
-    agent.generate(ascii, 20)
+    agent.generate(ascii, this.config.initialSize)
     return agent
   }
 
@@ -64,20 +65,6 @@ class EvolveRegexPatternModel extends Model {
     agent.rank += !agent.code.includes('4') && !agent.code.includes('2') ? 1 : 0
   }
 
-  select(agents){
-    agents = agents.sort((a, b)=>{ return b.rank - a.rank })
-    
-    if(this.config.log) {
-      let table = agents.map((agent)=>{
-        return { code:agent.code.substring(0,50), length:agent.code.length,  result:agent.result,  matches: agent.matches, rank: agent.rank}
-      })
-
-      console.table(table)
-    }
-
-    return agents.slice(0,35)
-  }
-
   variate(agents) {
     // crossovers
     for(let i=0; i<this.crossovers; i++){
@@ -93,6 +80,16 @@ class EvolveRegexPatternModel extends Model {
     }
 
     return agents
+  }
+
+  logEach(agents){
+    if(this.config.log) {
+      let table = agents.map((agent)=>{
+        return { code:agent.code.substring(0,50), length:agent.code.length,  result:agent.result,  matches: agent.matches, rank: agent.rank}
+      })
+
+      console.table(table)
+    }
   }
 
 }

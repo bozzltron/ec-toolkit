@@ -24,20 +24,22 @@ class OptimizationModel extends Model {
 
   constructor(config){
     super(Object.assign(config, {
-      population: 100,
-      keep: 50,
-      crossovers: 50,
-      generations: 100
+      population: 20,
+      keep: 10,
+      crossovers: 10,
+      generations: 50
     }))
   }
 
   initializeEach(){
+    let population = util.getRandomNumberBetween(0, 1000)
     return new this.config.model({
-      population: this.config.population,
-      keep: util.getRandomNumberBetween(0, this.config.population),
-      mutations: util.getRandomNumberBetween(0, this.config.population),
-      crossovers: util.getRandomNumberBetween(0, this.config.population),
+      population: population,
+      keep: util.getRandomNumberBetween(0, population),
+      mutations: util.getRandomNumberBetween(0, population),
+      crossovers: util.getRandomNumberBetween(0, population),
       generations: 100,
+      initialSize: util.getRandomNumberBetween(0, 1000),
       log: false
     })
   }
@@ -52,7 +54,15 @@ class OptimizationModel extends Model {
   }
 
   variate(models){
+    for(let i=0; i<this.config.crossovers; i++){
+      let mom = new GeneticObject(models[util.getRandomNumberBetween(0, models.length)].config)
+      let dad = new GeneticObject(models[util.getRandomNumberBetween(0, models.length)].config)
+      models.push(new this.config.model(mom.crossoverWith(dad)))
+    }
+    return models
+  }
 
+  logEach(models){
     let table = models.map((agent)=>{
       let config = Object.assign(agent.config)
       delete config.values
@@ -60,13 +70,6 @@ class OptimizationModel extends Model {
     })
 
     console.table(table)
-
-    for(let i=0; i<this.config.crossovers; i++){
-      let mom = new GeneticObject(models[util.getRandomNumberBetween(0, models.length)].config)
-      let dad = new GeneticObject(models[util.getRandomNumberBetween(0, models.length)].config)
-      models.push(new this.config.model(mom.crossoverWith(dad)))
-    }
-    return models
   }
 }
 

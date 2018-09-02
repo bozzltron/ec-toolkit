@@ -13,6 +13,7 @@ class Model {
 			keep: 0,
 			crossovers: 0,
 			mutations: 0,
+			log:true,
 			values: []
 		}, config)
 	}
@@ -41,6 +42,7 @@ class Model {
 						for(let i=0; i<agents.length; i++){
 							let agent = agents[i]
 							this.rankEach(agent)
+							this.logEach(agents)
 							if(this.terminate(agent)) {
 								this.evolving = false
 								resolve(agent, this.count)
@@ -56,6 +58,7 @@ class Model {
 					for(let i=0; i<agents.length; i++){
 						let agent = agents[i]
 						this.rankEach instanceof AsyncFunction ? await this.rankEach(agent) : this.rankEach(agent)
+						this.logEach(agents)
 						if(this.terminate(agent)) {
 							this.evolving = false
 							resolve(agent, this.count)
@@ -95,10 +98,9 @@ class Model {
 	}
 
 	logEach(agents){
-		let table = agents.map((agent)=>{
-      return { code:agent.code.substring(0,50), length:agent.code.length,  result:agent.result,  matches: agent.matches, rank: agent.rank}
-    })
-    console.table(table)
+		if(this.config.log){
+			console.table(agents)
+		}
 	}
 
 }
