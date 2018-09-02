@@ -45,12 +45,15 @@ class OptimizationModel extends Model {
   }
 
   async rankEach(model){
-    let result = await model.run()
-    model.rank = result.rank
+    // only run a model, if it has not already 
+    if(!model.rank) {
+      let result = await model.run()
+      model.rank = result.rank 
+    }
   }
 
   terminate(){
-    return this.count == 100
+    return this.count == this.generations
   }
 
   variate(models){

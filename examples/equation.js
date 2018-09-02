@@ -17,10 +17,10 @@ class EquationModel extends Model {
   
   constructor(config) {
     super(Object.assign({
-      population: 20,
-      keep: 15,
-      mutations: 1,
-      crossovers: 5,
+      population: 61,
+      keep: 35,
+      crossovers: 21,
+      mutations: 48,
       values: ascii
     }, config))
   }

@@ -45,7 +45,7 @@ class Model {
 							this.rankEach(agent)
 							if(this.terminate(agent)) {
 								this.evolving = false
-								resolve(agent, this.count)
+								return resolve(agent, this.count)
 							}
 						}
 						agents = this.sort(agents)
@@ -62,7 +62,7 @@ class Model {
 						this.rankEach instanceof AsyncFunction ? await this.rankEach(agent) : this.rankEach(agent)
 						if(this.terminate(agent)) {
 							this.evolving = false
-							resolve(agent, this.count)
+							return resolve(agent, this.count)
 						}
 					}
 					agents = this.sort(agents)
