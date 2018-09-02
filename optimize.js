@@ -32,7 +32,7 @@ class OptimizationModel extends Model {
   }
 
   initializeEach(){
-    let population = util.getRandomNumberBetween(0, 1000)
+    let population = util.getRandomNumberBetween(10, 100)
     return new this.config.model({
       population: population,
       keep: util.getRandomNumberBetween(0, population),
@@ -64,9 +64,9 @@ class OptimizationModel extends Model {
 
   logEach(models){
     let table = models.map((agent)=>{
-      let config = Object.assign(agent.config)
+      let config = Object.assign({}, agent.config)
       delete config.values
-      return { config:JSON.stringify(agent.config), rank: agent.rank}
+      return { config:JSON.stringify(config), rank: agent.rank}
     })
 
     console.table(table)

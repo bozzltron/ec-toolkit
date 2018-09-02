@@ -19,9 +19,12 @@ async function run() {
     config.generations = Infinity
     config.log = true
     console.log("optimized config", config)
+    console.log("achieved rank", optimized.rank)
   } else {
-    let result = await new Model(config).run()
+    let model = new Model(config)
+    let result = await model.run()
     console.log("FINAL RESULT", result)
+    console.log("generations", model.count)
   }
   
 }

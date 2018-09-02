@@ -1,7 +1,8 @@
 'use strict;'
 
 const cTable = require('console.table'),
-	 AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
+	 AsyncFunction = Object.getPrototypeOf(async function(){}).constructor,
+	 util = require('./util')
 
 class Model {
 
@@ -42,12 +43,13 @@ class Model {
 						for(let i=0; i<agents.length; i++){
 							let agent = agents[i]
 							this.rankEach(agent)
-							this.logEach(agents)
 							if(this.terminate(agent)) {
 								this.evolving = false
 								resolve(agent, this.count)
 							}
 						}
+						agents = this.sort(agents)
+						this.log(agents)
 						agents = this.select(agents)
 						agents = this.variate.bind(this)(agents)
 						this.count++
@@ -58,12 +60,13 @@ class Model {
 					for(let i=0; i<agents.length; i++){
 						let agent = agents[i]
 						this.rankEach instanceof AsyncFunction ? await this.rankEach(agent) : this.rankEach(agent)
-						this.logEach(agents)
 						if(this.terminate(agent)) {
 							this.evolving = false
 							resolve(agent, this.count)
 						}
 					}
+					agents = this.sort(agents)
+					this.log(agents)
 					agents = this.select(agents)
 					agents = this.variate.bind(this)(agents)
 					this.count++;
@@ -79,8 +82,11 @@ class Model {
 		return this;
 	}
 
+	sort(agents){
+		return agents.sort((a, b)=>{ return b.rank - a.rank })
+	}
+
 	select(agents){
-		agents = agents.sort((a, b)=>{ return b.rank - a.rank })
 		return agents.slice(0, this.config.keep)
 	}
 
@@ -97,7 +103,7 @@ class Model {
 		return agents
 	}
 
-	logEach(agents){
+	log(agents){
 		if(this.config.log){
 			console.table(agents)
 		}

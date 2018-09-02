@@ -1,8 +1,9 @@
 'use strict;'
 const cTable = require('console.table'),
-  model = require('../model'),
+  Model = require('../model'),
   GeneticString = require('../data-structures/genetic-string'),
-  ascii = require('../data/ascii')
+  ascii = require('../data/ascii'),
+  util = require('../util')
 
 /*
   Evolving a simple Math equation
@@ -12,18 +13,29 @@ const cTable = require('console.table'),
   results in 42, without the program knowing anything about mathematics.
 */
 
-model
-  .populate(20)
-  .initializeEach(()=>{ 
+class EquationModel extends Model {
+  
+  constructor(config) {
+    super(Object.assign({
+      population: 20,
+      keep: 15,
+      mutations: 1,
+      crossovers: 5,
+      values: ascii
+    }, config))
+  }
+
+  initializeEach(){
     let agent = new GeneticString()
     agent.generate(ascii, 20)
     return agent
-  })
-  .terminate((agent)=>{
-    return isNaN(agent.code) && !agent.code.includes('42') && agent.result == 42
-  })
-  .rankEach((agent)=>{
+  }
 
+  terminate(agent){
+    return isNaN(agent.code) && !agent.code.includes('42') && agent.result == 42
+  }
+
+  rankEach(agent){
     // This function determines an agents fitness, which is quantified as rank.
     agent.rank = 0
 
@@ -49,36 +61,31 @@ model
       let proximity = Math.round( (1 /  Math.abs(42 - agent.result ) * 100)) 
       agent.rank += !isNaN(proximity) ? proximity : 0
     }
+  }
 
-  })
-  .select((agents) =>{
-
-    agents = agents.sort((a, b)=>{ return b.rank - a.rank })
-    
-    let table = agents.map((agent)=>{
-      return { code:agent.code.substring(0,80), length:agent.code.length,  result:agent.result,  rank: agent.rank}
-    })
-    console.table(table)
-
-    return agents.slice(0,15)
-  })
-  .variate((agents)=>{
-    // crossovers
-    for(let i=0; i<5; i++){
-      let mom = Math.floor(Math.random() * Math.floor(15))
-      let dad = Math.floor(Math.random() * Math.floor(15))
-      agents.unshift(new GeneticString(agents[mom].crossoverWith(agents[dad])))
+	variate(agents){
+    for(let i=0; i<this.config.crossovers; i++){
+      let mom = util.getRandomNumberBetween(0, agents.length)
+      let dad = util.getRandomNumberBetween(0, agents.length)
+      dad = mom == dad ? dad++ : dad
+      agents.push(new GeneticString(agents[mom].crossoverWith(agents[dad])))
+		}
+    for(let i=0; i<this.config.mutations; i++){
+      let index = util.getRandomNumberBetween(0, agents.length)
+      agents[index].mutate(1, this.config.values)
     }
+		return agents
+	}
 
-    // mutations
-    for(let i=0; i<1; i++){
-      let index = Math.floor(Math.random() * Math.floor(20))
-      agents[index].mutate(ascii, 1)
+  log(agents){
+    if(this.config.log){
+      let table = agents.map((agent)=>{
+        return { code:agent.code.substring(0,80), length:agent.code.length,  result:agent.result,  rank: agent.rank}
+      })
+      console.table(table)
     }
-    return agents
-  })
-  .run()
-  .then((agent)=>{
-    console.log("FINAL RESULT", agent.code)
-  })
+  }
+}
+
+module.exports = EquationModel
 
