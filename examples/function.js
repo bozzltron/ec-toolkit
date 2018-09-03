@@ -13,7 +13,6 @@ const cTable = require('console.table');
 var Model = require('../model'),
   GeneticBinaryTree = require('../data-structures/genetic-binary-tree'),
   reserved = require('../data/reserved'),
-  ascii = require('../data/ascii'),
   operators = require('../data/operators'),
   code = reserved.concat(Array.from('0123456789P[]{}:,;()')).concat(operators),
   util = require('../util')
