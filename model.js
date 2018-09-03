@@ -51,8 +51,13 @@ class Model {
 					agents = this.sort(agents)
 					this.log(agents)
 					agents = this.select(agents)
-					agents = this.variate.bind(this)(agents)
+					let offspring = this.crossover(agents)
+					offspring = this.mutate(offspring)
+					agents = agents.concat(offspring)
 					this.count++;
+				}
+				if(this.evolving) {
+					resolve(agents[0])
 				}
 			} catch(e){
 				reject(e)
@@ -60,11 +65,6 @@ class Model {
 			
 		}.bind(this));
 
-	}
-
-	sleep(sec) {
-		this.sleepFor = sec * 1000;
-		return this;
 	}
 
 	sort(agents){
@@ -75,20 +75,25 @@ class Model {
 		return agents.slice(0, this.config.keep)
 	}
 
-	variate(agents){
+	crossover(agents){
+		let offspring = []
     for(let i=0; i<this.config.crossovers; i++){
       let mom = util.getRandomNumberBetween(0, agents.length)
 			let dad = util.getRandomNumberBetween(0, agents.length)
 			while(dad == mom){
         dad = util.getRandomNumberBetween(0, agents.length)
       }
-      agents.push(agents[mom].crossoverWith(agents[dad]))
+      offspring.push(agents[mom].crossoverWith(agents[dad]))
 		}
+		return offspring		
+	}
+
+	mutate(agents){
     for(let i=0; i<this.config.mutations; i++){
       let index = util.getRandomNumberBetween(0, agents.length)
       agents[index].mutate(1, this.config.values)
-    }
-		return agents
+		}
+		return agents		
 	}
 
 	log(agents){

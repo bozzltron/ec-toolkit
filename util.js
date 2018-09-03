@@ -11,6 +11,10 @@ module.exports = {
       sample += ary[Math.floor(Math.random() * ary.length)]
     }
     return sample
+  },
+
+  proximityTo(target, result){
+    return Math.round( (1 /  Math.abs(target - result ) * 100)) 
   }
 
 }

@@ -52,32 +52,13 @@ class FunctionModel extends Model {
     agent.rank += agent.code.includes('return') ? 1 : 0
     agent.rank += typeof(result) == 'number' ? 1 : 0
     
-    let proximity = Math.round( (1 /  Math.abs(42 - agent.result ) * 100)) 
+    let proximity = util.proximityTo(42, agent.result)
     agent.rank += !isNaN(proximity) ? proximity : 0
 
   }
 
   terminate(agent){
     return agent.result === 42 
-  }
-
-  variate(agents){
-
-    for(let i=0; i<this.config.crossovers; i++){
-      let mom = util.getRandomNumberBetween(0, agents.length)
-      let dad = util.getRandomNumberBetween(0, agents.length)
-      while(dad == mom){
-        dad = util.getRandomNumberBetween(0, agents.length)
-      }
-      agents.unshift(agents[mom].crossoverWith(agents[dad]))
-    }
-
-    for(let i=0; i<this.config.mutations; i++){
-      let index = util.getRandomNumberBetween(0, agents.length)
-      agents[index].mutate(1, code)
-    }
-    
-    return agents
   }
 
   log(agents){
