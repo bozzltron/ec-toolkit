@@ -36,33 +36,16 @@ class Model {
 				console.log(`Initialize ${this.config.population} agents...`)
 				console.log(`limit to ${this.config.generations} generations...`)
 			}
-			
-			if(this.sleepFor) {
-				setInterval(function(){
-					if(this.evolving && this.count < this.config.generations) {
-						for(let i=0; i<agents.length; i++){
-							let agent = agents[i]
-							this.rankEach(agent)
-							if(this.terminate(agent)) {
-								this.evolving = false
-								return resolve(agent, this.count)
-							}
-						}
-						agents = this.sort(agents)
-						this.log(agents)
-						agents = this.select(agents)
-						agents = this.variate.bind(this)(agents)
-						this.count++
-					}
-				}.bind(this), this.sleepFor)
-			} else {
+
+			try {
 				while(this.evolving && this.count < this.config.generations) {
 					for(let i=0; i<agents.length; i++){
 						let agent = agents[i]
 						this.rankEach instanceof AsyncFunction ? await this.rankEach(agent) : this.rankEach(agent)
 						if(this.terminate(agent)) {
 							this.evolving = false
-							return resolve(agent, this.count)
+							resolve(Object.assign({},agent), this.count)
+							break
 						}
 					}
 					agents = this.sort(agents)
@@ -71,8 +54,10 @@ class Model {
 					agents = this.variate.bind(this)(agents)
 					this.count++;
 				}
-			}			
-			resolve(agents[0], this.count)
+			} catch(e){
+				reject(e)
+			}
+			
 		}.bind(this));
 
 	}
@@ -93,7 +78,10 @@ class Model {
 	variate(agents){
     for(let i=0; i<this.config.crossovers; i++){
       let mom = util.getRandomNumberBetween(0, agents.length)
-      let dad = util.getRandomNumberBetween(0, agents.length)
+			let dad = util.getRandomNumberBetween(0, agents.length)
+			while(dad == mom){
+        dad = util.getRandomNumberBetween(0, agents.length)
+      }
       agents.push(agents[mom].crossoverWith(agents[dad]))
 		}
     for(let i=0; i<this.config.mutations; i++){

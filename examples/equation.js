@@ -21,18 +21,19 @@ class EquationModel extends Model {
       keep: 35,
       crossovers: 21,
       mutations: 48,
-      values: ascii
+      initialSize:20,
+      values: ascii.filter((char)=>{ return char != '4' && char != '2'})
     }, config))
   }
 
   initializeEach(){
     let agent = new GeneticString()
-    agent.generate(ascii, 20)
+    agent.generate(ascii, this.config.initialSize)
     return agent
   }
 
   terminate(agent){
-    return isNaN(agent.code) && !agent.code.includes('42') && agent.result == 42
+    return isNaN(agent.code) && agent.result == 42
   }
 
   rankEach(agent){
@@ -67,7 +68,9 @@ class EquationModel extends Model {
     for(let i=0; i<this.config.crossovers; i++){
       let mom = util.getRandomNumberBetween(0, agents.length)
       let dad = util.getRandomNumberBetween(0, agents.length)
-      dad = mom == dad ? dad++ : dad
+      while(dad == mom){
+        dad = util.getRandomNumberBetween(0, agents.length)
+      }
       agents.push(new GeneticString(agents[mom].crossoverWith(agents[dad])))
 		}
     for(let i=0; i<this.config.mutations; i++){

@@ -15,11 +15,7 @@ async function run() {
   if(optimize){
     console.log("optimizing...")
     let optimized = await new OptimizeModel({model:Model}).run()
-    config = optimized.config
-    config.generations = Infinity
-    config.log = true
-    console.log("optimized config", config)
-    console.log("achieved rank", optimized.rank)
+    console.log("optimized", optimized)
   } else {
     let model = new Model(config)
     let result = await model.run()

@@ -35,11 +35,11 @@ class OptimizationModel extends Model {
     let population = util.getRandomNumberBetween(10, 100)
     return new this.config.model({
       population: population,
-      keep: util.getRandomNumberBetween(0, population),
+      keep: util.getRandomNumberBetween(2, population),
       mutations: util.getRandomNumberBetween(0, population),
       crossovers: util.getRandomNumberBetween(0, population),
       generations: 100,
-      initialSize: util.getRandomNumberBetween(0, 1000),
+      initialSize: util.getRandomNumberBetween(1, 100),
       log: false
     })
   }
@@ -58,8 +58,13 @@ class OptimizationModel extends Model {
 
   variate(models){
     for(let i=0; i<this.config.crossovers; i++){
-      let mom = new GeneticObject(models[util.getRandomNumberBetween(0, models.length)].config)
-      let dad = new GeneticObject(models[util.getRandomNumberBetween(0, models.length)].config)
+      let momIndex = util.getRandomNumberBetween(0, models.length)
+      let dadIndex = util.getRandomNumberBetween(0, models.length)
+      while(dadIndex == momIndex){
+        dadIndex = util.getRandomNumberBetween(0, agents.length)
+      }
+      let mom = new GeneticObject(models[momIndex].config)
+      let dad = new GeneticObject(models[dadIndex].config)
       models.push(new this.config.model(mom.crossoverWith(dad)))
     }
     return models

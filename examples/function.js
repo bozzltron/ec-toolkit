@@ -10,24 +10,32 @@ const cTable = require('console.table');
   about JavaScript.
 */
 
-var model = require('../model'),
+var Model = require('../model'),
   GeneticBinaryTree = require('../data-structures/genetic-binary-tree'),
   reserved = require('../data/reserved'),
   ascii = require('../data/ascii'),
   operators = require('../data/operators'),
-  code = reserved.concat(Array.from('0123456789P[]{}:,;()')).concat(operators) 
+  code = reserved.concat(Array.from('0123456789P[]{}:,;()')).concat(operators),
+  util = require('../util')
 
-model
-  .populate(40)
-  .initializeEach(()=>{ 
+class FunctionModel extends Model {
+  constructor(config) {
+    super(Object.assign({
+      population:40,
+      keep: 30,
+      crossovers: 10,
+      mutations: 1,
+      initialSize: 7
+    }, config))
+  }
+
+  initializeEach(){
     let tree = new GeneticBinaryTree()
-    tree.generate(code, 7)
+    tree.generate(code, this.config.initialSize)
     return tree
-  })
-  .terminate((agent)=>{
-    return agent.result === 42
-  })
-  .rankEach((agent)=>{
+  }
+
+  rankEach(agent){
 
     // This function determines an agents fitness, which is quantified as rank.
     agent.rank = 0
@@ -48,38 +56,38 @@ model
     let proximity = Math.round( (1 /  Math.abs(42 - agent.result ) * 100)) 
     agent.rank += !isNaN(proximity) ? proximity : 0
 
-  })
-  .select((agents)=>{
-    // Take top half
-    agents = agents.sort((a, b)=>{ return b.rank - a.rank })
-    
-    let table = agents.map((agent)=>{
-      return { code:agent.code.substring(0,80), length:agent.code.length,  result:agent.result,  rank: agent.rank}
-    })
-    console.table(table)
+  }
 
-    // take the top
-    return agents.slice(0,30)
-  })
-  .variate((agents)=>{
-    // crossovers
-    for(let i=0; i<10; i++){
-      let mom = Math.floor(Math.random() * Math.floor(10))
-      let dad = Math.floor(Math.random() * Math.floor(10))
+  terminate(agent){
+    return agent.result === 42 
+  }
+
+  variate(agents){
+
+    for(let i=0; i<this.config.crossovers; i++){
+      let mom = util.getRandomNumberBetween(0, agents.length)
+      let dad = util.getRandomNumberBetween(0, agents.length)
+      while(dad == mom){
+        dad = util.getRandomNumberBetween(0, agents.length)
+      }
       agents.unshift(agents[mom].crossoverWith(agents[dad]))
     }
 
-    // mutations
-    for(let i=0; i<1; i++){
-      let index = Math.floor(Math.random() * Math.floor(40))
+    for(let i=0; i<this.config.mutations; i++){
+      let index = util.getRandomNumberBetween(0, agents.length)
       agents[index].mutate(1, code)
     }
     
     return agents
-  })
-  .run()
-  .then((agent)=>{
-      console.log("FINAL RESULT", agent.code)
-      console.log('tree', agent.toJSON())
-  })
+  }
+
+  log(agents){
+    let table = agents.map((agent)=>{
+      return { code:agent.code.substring(0,80), length:agent.code.length,  result:agent.result,  rank: agent.rank}
+    })
+    console.table(table)    
+  }
+}
+
+module.exports = FunctionModel
 
