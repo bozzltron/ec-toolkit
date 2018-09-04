@@ -85,7 +85,7 @@ class GeneticBinaryTree {
     let result = {}
     this.findParent(removalPrune.id, child.root, result)
     result.node[result.direction] = replacementPrune
-    return child
+    return new GeneticBinaryTree(child)
   }
 
   findParent(id, node, result){

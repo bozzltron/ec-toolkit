@@ -41,7 +41,7 @@ class GeneticString {
     let breakpoint = util.getRandomNumberBetween(1,this.code.length), 
       dad = this.code.split('').slice(0, breakpoint)
     mom = mom.code.split('').slice(breakpoint, mom.code.length);    
-    return dad.concat(mom).join('')
+    return new GeneticString(dad.concat(mom).join(''))
   }
 
   replaceAt (index, replacement) {

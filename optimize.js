@@ -56,12 +56,12 @@ class OptimizationModel extends Model {
     return this.count == this.generations
   }
 
-  variate(models){
+  crossover(models){
     for(let i=0; i<this.config.crossovers; i++){
       let momIndex = util.getRandomNumberBetween(0, models.length)
       let dadIndex = util.getRandomNumberBetween(0, models.length)
       while(dadIndex == momIndex){
-        dadIndex = util.getRandomNumberBetween(0, agents.length)
+        dadIndex = util.getRandomNumberBetween(0, models.length)
       }
       let mom = new GeneticObject(models[momIndex].config)
       let dad = new GeneticObject(models[dadIndex].config)
@@ -70,7 +70,11 @@ class OptimizationModel extends Model {
     return models
   }
 
-  logEach(models){
+  mutate(models){
+    return models
+  }
+
+  log(models){
     let table = models.map((agent)=>{
       let config = Object.assign({}, agent.config)
       delete config.values

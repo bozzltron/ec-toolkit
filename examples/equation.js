@@ -17,18 +17,18 @@ class EquationModel extends Model {
   
   constructor(config) {
     super(Object.assign({
-      population: 61,
-      keep: 35,
-      crossovers: 21,
-      mutations: 48,
+      population: 80,
+      keep: 21,
+      crossovers: 14,
+      mutations: 11,
       initialSize:20,
-      values: ascii.filter((char)=>{ return char != '4' && char != '2'})
+      values: Array.from('+-/*0123456789')
     }, config))
   }
 
   initializeEach(){
     let agent = new GeneticString()
-    agent.generate(ascii, this.config.initialSize)
+    agent.generate(this.config.values, this.config.initialSize)
     return agent
   }
 

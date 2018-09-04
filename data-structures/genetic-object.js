@@ -15,7 +15,7 @@ class GeneticObject {
       let key = keys[i]
       child[key] = mom[key]
     }
-    return child
+    return new GeneticObject(child)
   }
 
 }
