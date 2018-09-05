@@ -11,20 +11,22 @@ const cTable = require('console.table');
 */
 
 var Model = require('../model'),
-  GeneticBinaryTree = require('../data-structures/genetic-binary-tree'),
+  GeneticBinaryTree = require('../data-structures/genetic-binary-avl'),
   reserved = require('../data/reserved'),
   operators = require('../data/operators'),
-  code = reserved.concat(Array.from('0123456789P[]{}:,;()')).concat(operators),
+  code = reserved.concat(Array.from('0123456789[]{}:,;()')).concat(operators),
   util = require('../util')
 
 class FunctionModel extends Model {
+
   constructor(config) {
     super(Object.assign({
-      population:40,
-      keep: 30,
-      crossovers: 10,
+      population: 100,
+      keep: 40,
+      crossovers: 60,
       mutations: 1,
-      initialSize: 7
+      initialSize: 9,
+      values: code
     }, config))
   }
 
@@ -41,7 +43,7 @@ class FunctionModel extends Model {
 
     // Evaluate the candidate code
     try { 
-      agent.code = agent.inOrderValues().join(' ')
+      agent.code = agent.tree.keys().join(' ')
       agent.compiled = Function(agent.code)
       agent.rank += 1
       agent.result = agent.compiled()
@@ -62,10 +64,17 @@ class FunctionModel extends Model {
   }
 
   log(agents){
-    let table = agents.map((agent)=>{
-      return { code:agent.code.substring(0,80), length:agent.code.length,  result:agent.result,  rank: agent.rank}
-    })
-    console.table(table)    
+    if(this.config.log){
+      let table = agents.map((agent)=>{
+        return { 
+          code:agent.code.substring(0,80), 
+          //tree: agent.toJSON(),
+          length:agent.code.length,  
+          result:agent.result,  
+          rank: agent.rank}
+      })
+      console.table(table)    
+    }
   }
 }
 

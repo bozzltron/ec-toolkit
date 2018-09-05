@@ -47,10 +47,10 @@ describe("GeneticString", function(){
     let mom = new GeneticString()
     mom.generate(ascii, 20)
     let child = dad.crossoverWith(mom)
-    expect(dad.code).not.toEqual(child)
-    expect(mom.code).not.toEqual(child)
-    expect(dad.code.length == child.length).toEqual(true)
-    expect(mom.code.length == child.length).toEqual(true)
+    expect(dad.code).not.toEqual(child.code)
+    expect(mom.code).not.toEqual(child.code)
+    expect(dad.code.length == child.code.length).toEqual(true)
+    expect(mom.code.length == child.code.length).toEqual(true)
   })
   
 });

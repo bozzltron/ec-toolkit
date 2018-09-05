@@ -50,11 +50,11 @@ class Model {
 					}
 					agents = this.sort(agents)
 					this.log(agents)
-					agents = this.select(agents)
-					let offspring = this.crossover(agents)
+					let parents = this.select(agents)
+					let offspring = this.crossover(parents)
 					offspring = this.mutate(offspring)
-					agents = agents.concat(offspring)
-					this.count++;
+					agents = parents.concat(offspring)
+					this.count++
 				}
 				if(this.evolving) {
 					resolve(agents[0])
@@ -104,4 +104,4 @@ class Model {
 
 }
 
-module.exports = Model;
+module.exports = Model

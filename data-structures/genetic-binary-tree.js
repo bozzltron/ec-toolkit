@@ -5,7 +5,7 @@ const _ = require('lodash'),
 class GeneticBinaryTree {
 
   constructor(root){
-    this.root = root
+    this.root = root && root.root ? root.root : root
     if(this.root){
       this.root.isRoot = true
       if(!this.root.id) {
@@ -53,6 +53,9 @@ class GeneticBinaryTree {
   prune(){
     let ary = this.inOrder().filter((node)=>{ return !node.isRoot})
     let sample =  _.sampleSize(ary, 1)[0]
+    if(_.isEmpty(sample)){
+      let x = 1
+    }
     return Object.assign({}, sample)
   }
 
