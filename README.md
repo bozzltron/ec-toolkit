@@ -6,6 +6,9 @@ EC Toolkit comes with model.js which allows you to quickly setup each step of an
 
 ```
 const Model = require('./model'),
+  GeneticString = require('./data-structures/genetic-string'),
+  ascii = require('./data/ascii'),
+
 class ExampleModel extends Model {
   
   constructor() {
@@ -14,13 +17,16 @@ class ExampleModel extends Model {
 			keep: 50,
 			crossovers: 100,
 			mutations: 1,
-			values: []
+      initialSize:10,
+			values: ascii
 		}
 	}
 
   initializeEach(){
     // initialize each agent
-    return { code: "" }
+    let agent = new GeneticString()
+    agent.generate(this.config.values, this.config.initialSize)
+    return agent
   }
 
   terminate(agent){
