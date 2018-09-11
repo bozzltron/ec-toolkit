@@ -7,7 +7,6 @@ const cTable = require('console.table'),
 class Model {
 
 	constructor(config) {
-		this.sleepFor = 0
 		this.config = Object.assign({}, {
 			generations: Infinity,
 			population: 0,
@@ -53,7 +52,7 @@ class Model {
 					let parents = this.select(agents)
 					let offspring = this.crossover(parents)
 					offspring = this.mutate(offspring)
-					agents = parents.concat(offspring)
+					agents = offspring;
 					this.count++
 				}
 				if(this.evolving) {
@@ -78,10 +77,10 @@ class Model {
 	crossover(agents){
 		let offspring = []
     for(let i=0; i<this.config.crossovers; i++){
-      let mom = util.getRandomNumberBetween(0, agents.length)
-			let dad = util.getRandomNumberBetween(0, agents.length)
+      let mom = util.getRandomNumberBetween(0, agents.length-1)
+			let dad = util.getRandomNumberBetween(0, agents.length-1)
 			while(dad == mom){
-        dad = util.getRandomNumberBetween(0, agents.length)
+        dad = util.getRandomNumberBetween(0, agents.length-1)
       }
       offspring.push(agents[mom].crossoverWith(agents[dad]))
 		}
@@ -89,8 +88,9 @@ class Model {
 	}
 
 	mutate(agents){
-    for(let i=0; i<this.config.mutations; i++){
-      let index = util.getRandomNumberBetween(0, agents.length)
+		let mutations = util.getRandomNumberBetween(0, this.config.mutations)
+    for(let i=0; i<mutations; i++){
+      let index = util.getRandomNumberBetween(0, agents.length-1)
       agents[index].mutate(1, this.config.values)
 		}
 		return agents		

@@ -11,20 +11,21 @@ const cTable = require('console.table');
 */
 
 var Model = require('../model'),
-  GeneticBinaryTree = require('../data-structures/genetic-binary-tree'),
-  reserved = require('../data/reserved'),
+  GeneticBinaryTree = require('../data-structures/genetic-binary-avl'),
   operators = require('../data/operators'),
-  code = reserved.concat(Array.from('0123456789P[]{}:,;()')).concat(operators).concat('arguments[0]'),
+  code = ['return', 'arguments[0]'].concat(Array.from('0123456789[]{}:,;()./\\')).concat(operators),
   util = require('../util')
 
-  class FunctionWithParamsModel extends Model {
+class FunctionWithParamsModel extends Model {
     constructor(config) {
       super(Object.assign({
-        population:40,
-        keep: 30,
-        crossovers: 10,
-        mutations: 1,
-        initialSize: 7
+        population: 100,
+        keep: 50,
+        crossovers: 100,
+        mutations: 10,
+        initialSize: 3,
+        log:true,
+        values: code
       }, config))
     }
   
@@ -41,44 +42,26 @@ var Model = require('../model'),
 
       // Evaluate the candidate code
       try { 
-        agent.code = agent.inOrderValues().join(' ')
+        agent.code = agent.tree.keys().join(' ')
         agent.compiled = Function(agent.code)
         agent.rank += 1
-        agent.result = agent.call({}, 3)
+        agent.result = agent.compiled()
+        agent.rank += 1
+        agent.result = agent.result.call({}, 3)
         agent.rank += 1
       } catch(e) {}
 
-      agent.rank += agent.code.includes('arguments[0]') ? 1 : 0
       agent.rank -= agent.code.length > 100 ? 1 : 0
       agent.rank += agent.code.includes('return') ? 1 : 0
       agent.rank += typeof(result) == 'number' ? 1 : 0
       
-      let proximity = Math.round( (1 /  Math.abs(42 - agent.result ) * 100)) 
+      let proximity = util.proximityTo(42, agent.result)
       agent.rank += !isNaN(proximity) ? proximity : 0
 
     }
   
     terminate(agent){
       return agent.result === 42 
-    }
-  
-    variate(agents){
-  
-      for(let i=0; i<this.config.crossovers; i++){
-        let mom = util.getRandomNumberBetween(0, agents.length)
-        let dad = util.getRandomNumberBetween(0, agents.length)
-        while(dad == mom){
-          dad = util.getRandomNumberBetween(0, agents.length)
-        }
-        agents.unshift(agents[mom].crossoverWith(agents[dad]))
-      }
-  
-      for(let i=0; i<this.config.mutations; i++){
-        let index = util.getRandomNumberBetween(0, agents.length)
-        agents[index].mutate(1, code)
-      }
-      
-      return agents
     }
   
     log(agents){

@@ -32,12 +32,12 @@ class OptimizationModel extends Model {
   }
 
   initializeEach(){
-    let population = util.getRandomNumberBetween(10, 100)
+    let population = util.getRandomNumberBetween(10, 1000)
     return new this.config.model({
       population: population,
       keep: util.getRandomNumberBetween(2, population),
       mutations: util.getRandomNumberBetween(0, population),
-      crossovers: util.getRandomNumberBetween(0, population),
+      crossovers: util.getRandomNumberBetween(1, population),
       generations: 100,
       initialSize: util.getRandomNumberBetween(1, 100),
       log: false

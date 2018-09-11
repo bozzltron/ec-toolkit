@@ -1,5 +1,4 @@
 'use strict;'
-const cTable = require('console.table');
 
 /*
   Evolving JavaScript Code
@@ -11,30 +10,28 @@ const cTable = require('console.table');
 */
 
 var Model = require('../model'),
-  GeneticBinaryTree = require('../data-structures/genetic-binary-avl'),
-  reserved = require('../data/reserved'),
-  operators = require('../data/operators'),
-  code = ['return'].concat(Array.from('0123456789[]{}:,;()./\\')).concat(operators),
+  GeneticString = require('../data-structures/genetic-string'),
+  ascii = require('../data/ascii'),
   util = require('../util')
 
 class FunctionModel extends Model {
 
   constructor(config) {
     super(Object.assign({
-      population: 100,
-      keep: 50,
-      crossovers: 100,
-      mutations: 10,
-      initialSize: 3,
+      population: 959,
+      keep: 474,
+      crossovers: 354,
+      mutations: 270,
+      initialSize: 9,
       log:true,
-      values: code
+      values: ascii
     }, config))
   }
 
   initializeEach(){
-    let tree = new GeneticBinaryTree()
-    tree.generate(code, this.config.initialSize)
-    return tree
+    let string = new GeneticString()
+    string.generate(ascii, this.config.initialSize)
+    return string
   }
 
   rankEach(agent){
@@ -44,7 +41,6 @@ class FunctionModel extends Model {
 
     // Evaluate the candidate code
     try { 
-      agent.code = agent.tree.keys().join(' ')
       agent.compiled = Function(agent.code)
       agent.rank += 1
       agent.result = agent.compiled()
