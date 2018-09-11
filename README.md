@@ -12,15 +12,15 @@ const Model = require('./model'),
 class ExampleModel extends Model {
   
   constructor() {
-		this.config = {
-			population: 100,
-			keep: 50,
-			crossovers: 100,
-			mutations: 1,
+    this.config = {
+      population: 100,
+      keep: 50,
+      crossovers: 100,
+      mutations: 1,
       initialSize:10,
-			values: ascii
-		}
-	}
+      values: ascii
+    }
+  }
 
   initializeEach(){
     // initialize each agent
