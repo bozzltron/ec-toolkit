@@ -70,22 +70,6 @@ class EvolveRegexPatternModel extends Model {
 
   }
 
-  variate(agents) {
-    // crossovers
-    for(let i=0; i<this.config.crossovers; i++){
-      let mom = Math.floor(Math.random() * Math.floor(10))
-      let dad = Math.floor(Math.random() * Math.floor(10))
-      agents.push(new GeneticString(agents[mom].crossoverWith(agents[dad])))
-    }
-
-    // mutations
-    for(let i=0; i<this.config.mutations; i++){
-      let index = math.getRandomNumberBetween(0, agents.length)
-      agents[index].mutate(1, this.config.values)
-    }
-
-    return agents
-  }
 
   log(agents){
     if(this.config.log) {

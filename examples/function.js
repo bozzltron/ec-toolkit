@@ -22,9 +22,9 @@ class FunctionModel extends Model {
   constructor(config) {
     super(Object.assign({
       population: 100,
-      keep: 50,
+      keep: 90,
       crossovers: 100,
-      mutations: 10,
+      mutations: 1,
       initialSize: 3,
       log:true,
       values: code

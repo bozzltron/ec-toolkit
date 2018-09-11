@@ -58,10 +58,10 @@ class OptimizationModel extends Model {
 
   crossover(models){
     for(let i=0; i<this.config.crossovers; i++){
-      let momIndex = util.getRandomNumberBetween(0, models.length)
-      let dadIndex = util.getRandomNumberBetween(0, models.length)
+      let momIndex = util.getRandomNumberBetween(1, models.length-1)
+      let dadIndex = util.getRandomNumberBetween(1, models.length-1)
       while(dadIndex == momIndex){
-        dadIndex = util.getRandomNumberBetween(0, models.length)
+        dadIndex = util.getRandomNumberBetween(1, models.length-1)
       }
       let mom = new GeneticObject(models[momIndex].config)
       let dad = new GeneticObject(models[dadIndex].config)

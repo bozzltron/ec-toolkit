@@ -105,8 +105,7 @@ while(notTerminating()){
 
   // select parents
   agents = agents.sort((a, b)=>{ return b.fitness - a.fitness });
-  let numberOfParents = 5;
-  let parents = agents.slice(0,5)
+  let parents = agents.slice(0,8)
   
   console.log("parents", parents)
 
@@ -114,10 +113,10 @@ while(notTerminating()){
   let newAgents = 10;
 
   for(let i=0; i<newAgents; i++){
-      let mom = getRandomNumberBetween(0, parents.length-1)
-      let dad = getRandomNumberBetween(0, parents.length-1)
+      let mom = getRandomNumberBetween(1, parents.length-1)
+      let dad = getRandomNumberBetween(1, parents.length-1)
       while(dad == mom){
-          dad = getRandomNumberBetween(0, parents.length-1)
+          dad = getRandomNumberBetween(1, parents.length-1)
       }
       offspring.push(crossover(parents[mom], parents[dad]))
   }
@@ -136,7 +135,6 @@ while(notTerminating()){
     mutate(offspring[index], 1, chars);
   }
   
-
   console.log('selected', agents)
   console.log("generations", generations);
   generations++

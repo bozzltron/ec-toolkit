@@ -18,10 +18,10 @@ class EquationModel extends Model {
   constructor(config) {
     super(Object.assign({
       population: 80,
-      keep: 21,
-      crossovers: 14,
-      mutations: 11,
-      initialSize:20,
+      keep: 70,
+      crossovers: 80,
+      mutations: 1,
+      initialSize:5,
       values: Array.from('+-/*0123456789')
     }, config))
   }
