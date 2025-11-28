@@ -1,3 +1,45 @@
-node_modules
-.*
-launch.json
+# Dependencies
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Build output
+dist/
+*.tsbuildinfo
+*.js.map
+*.d.ts.map
+
+# Testing
+coverage/
+.nyc_output/
+.jest/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cursor/
+
+# OS
+.DS_Store
+Thumbs.db
+.DS_Store?
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Legacy files (old JavaScript implementation)
+# Keep for reference but don't commit changes
+legacy/
